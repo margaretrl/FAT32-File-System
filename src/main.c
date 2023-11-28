@@ -48,8 +48,10 @@ int main(int argc, char *argv[]) {
             break;
         } else if (strcmp(commandLine, "info") == 0) {
             infocmd(&bootSector);
-        } else if (strncmp(commandLine, "cd ", 3) == 0) {
-            // cdcmd();
+        } else if (strncmp(commandLine, "cd ", 2) == 0) {
+            //char directory[MAX_PATH_LENGTH];
+            //sscanf(commandLine, "cd %s", directory);
+            cdcmd(commandLine, strlen(commandLine));
         } else if (strcmp(commandLine, "ls") == 0) {
             // lscmd();
         } else {
