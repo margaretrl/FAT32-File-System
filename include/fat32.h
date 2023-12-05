@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <inttypes.h>
 
-#define MAX_FILENAME_LENGTH 14
+//#define MAX_FILENAME_LENGTH 14
 #define DELETED_ENTRY 0xE5
 #define EMPTY_ENTRY 0x00
 /*

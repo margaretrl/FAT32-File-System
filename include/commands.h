@@ -10,6 +10,8 @@
 //void updateCurrentPath(const char *newDir);
 void infocmd(const BootSectorData *bs);
 void cdcmd(char* command, int cmdlength);
+// Function to display boot sector information
+void displayInfo(BootSectorData bootSectorData);
 
 
 #endif

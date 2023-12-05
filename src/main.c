@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
 #include <stdlib.h>
 #include <string.h>
 #include "fat32.h"
+#include "commands.h"
 
 #define SECTOR_SIZE 512
 #define DIR_ENTRY_SIZE 32
@@ -128,15 +129,6 @@ BootSectorData parseBootSector(FILE *imageFile) {
     bootSectorData.sizeOfImage = ftell(imageFile);
 
     return bootSectorData;
-}
-// Function to display boot sector information
-void displayInfo(BootSectorData bootSectorData) {
-    printf("Position of Root Cluster: %u\n", bootSectorData.rootClusterPosition);
-    printf("Bytes Per Sector: %u\n", bootSectorData.bytesPerSector);
-    printf("Sectors Per Cluster: %u\n", bootSectorData.sectorsPerCluster);
-    printf("Total Number of Clusters: %u\n", bootSectorData.totalClusters);
-    printf("Number of Entries in One FAT: %u\n", bootSectorData.numEntriesInFAT);
-    printf("Size of Image: %lu bytes\n", bootSectorData.sizeOfImage);
 }
 
 typedef struct {

@@ -39,7 +39,15 @@ void infocmd(const BootSectorData *bs) {
     printf("Size of Image in Bytes: %u\n", bs->imageSize);
 }*/
 
-
+// Function to display boot sector information
+void displayInfo(BootSectorData bootSectorData) {
+    printf("Bytes Per Sector: %u\n", bootSectorData.bytesPerSector);
+    printf("Sectors Per Cluster: %u\n", bootSectorData.sectorsPerCluster);
+    printf("Total clusters in Data Region: %u\n", bootSectorData.totalClusters);
+    printf("# of entries in one FAT: %u\n", bootSectorData.numEntriesInFAT);
+    printf("Size of Image (bytes): %u\n", bootSectorData.sizeOfImage);
+    printf("Root Cluster: %u\n", bootSectorData.rootClusterPosition);
+}   
 
 void cdcmd(char* command, int cmdlength)
 {
