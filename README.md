@@ -28,12 +28,12 @@ The purpose of this project is to familiarize you with basic file-system design 
 - **Assigned to**:Margaret Rivas and Hannah Housand
 
 ~~### Part 3: Create~~
-~~- **Responsibilities**:~~
-~~- [ ] Implement `mkdir [DIRNAME]` command to create a new directory.~~
-~~- [ ] Implement `creat [FILENAME]` command to create a new file with 0 bytes size.~~
-~~- [ ] Handle errors for existing files or directories with the same name.
-~~- **Completed by**:~~
-~- **Assigned to**: Hannah Housand and Sophia Quinoa~~
+- **Responsibilities**:
+- [ ] Implement `mkdir [DIRNAME]` command to create a new directory.
+- [ ] Implement `creat [FILENAME]` command to create a new file with 0 bytes size.
+- [ ] Handle errors for existing files or directories with the same name.
+- **Completed by**:
+- **Assigned to**: Hannah Housand and Sophia Quinoa
 
 ### Part 4: Read
 - **Responsibilities**:
@@ -45,20 +45,20 @@ The purpose of this project is to familiarize you with basic file-system design 
 - **Assigned to**: Margaret Rivas, Hannah Housand, Sophia Quinoa
 
 ~~### Part 5: Update~~
-~~- **Responsibilities**:~~
-~~- [ ] Implement `write [FILENAME] [STRING]` command to write data to a file.~~
-~~- [ ] Implement `append [FILENAME] [STRING]` command to append data to a file.~~
-~~- [ ] Error handling for non-existent files, directories, or incorrect file modes.~~
-~~- **Completed by**:~~
-~~- **Assigned to**: Margaret Rivas~~
+- **Responsibilities**:
+- [ ] Implement `write [FILENAME] [STRING]` command to write data to a file.
+- [ ] Implement `append [FILENAME] [STRING]` command to append data to a file.
+- [ ] Error handling for non-existent files, directories, or incorrect file modes.
+- **Completed by**:
+- **Assigned to**: Margaret Rivas
 
 ~~### Part 6: Delete~~
-~~- **Responsibilities**:~~
-~~- [ ] Implement `rm [FILENAME]` command to delete a file.~~
-~~- [ ] Implement `rmdir [DIRNAME]` command to remove a directory.~~
-~~- [ ] Error handling for non-existent files, directories, or when files are opened.~~
-~~- **Completed by**:~~
-~~- **Assigned to**: Sophia Quinoa~~
+- **Responsibilities**:
+- [ ] Implement `rm [FILENAME]` command to delete a file.
+- [ ] Implement `rmdir [DIRNAME]` command to remove a directory.
+- [ ] Error handling for non-existent files, directories, or when files are opened.
+- **Completed by**:
+- **Assigned to**: Sophia Quinoa
 
 ### Extra Credit
 - **Responsibilities**:
