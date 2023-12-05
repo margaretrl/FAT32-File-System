@@ -1,3 +1,10 @@
+#include "fat32.h"
+
+unsigned int firstSectorOfCluster(unsigned int cluster, const BootSectorData *bootSectorData) {
+    return ((cluster - 2) * bootSectorData->sectorsPerCluster) + bootSectorData->firstDataSector;
+}
+
+
 /*// Fat32 functions
 #include "fat32.h"
 

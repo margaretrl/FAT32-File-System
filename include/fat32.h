@@ -4,11 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <inttypes.h>
 
 #define MAX_FILENAME_LENGTH 14
 #define DELETED_ENTRY 0xE5
 #define EMPTY_ENTRY 0x00
-
+/*
 typedef struct {
     uint32_t rootCluster;       // Position of root cluster
     uint16_t bytesPerSector;    // Bytes per sector
@@ -18,6 +19,22 @@ typedef struct {
     uint32_t imageSize;         // Size of image in bytes
     // ... other fields as necessary ...
 } BootSector;
+*/
+
+typedef struct {
+    unsigned int bytesPerSector;
+    unsigned int sectorsPerCluster;
+    unsigned int firstDataSector;
+    unsigned int rootCluster;
+    unsigned int rootClusterPosition;
+    unsigned int totalClusters;
+    unsigned int numEntriesInFAT;
+    unsigned int sizeOfImage;
+} BootSectorData;
+// Function prototype
+unsigned int firstSectorOfCluster(unsigned int cluster, const BootSectorData *bootSectorData);
+
+
 /*
 typedef struct {
     uint32_t sectorsPerCluster;

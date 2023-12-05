@@ -38,6 +38,8 @@ void infocmd(const BootSector *bs) {
     printf("Size of Image in Bytes: %u\n", bs->imageSize);
 }
 
+
+
 void cdcmd(char* command, int cmdlength)
 {
     // not handling .. rn
