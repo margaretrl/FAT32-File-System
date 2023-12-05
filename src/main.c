@@ -166,18 +166,6 @@ int main(int argc, char *argv[]) {
 
     char command[100];
     char imagePath[256] = "/";  // Initial path
-    while (1) {
-        printf("[%s]%s> ", argv[1], imagePath);
-        scanf("%s", command);
-
-        if (strcmp(command, "info") == 0) {
-            displayInfo(bootSectorData);
-        } else if (strcmp(command, "exit") == 0) {
-            break;
-        } else {
-            printf("Unknown command.\n");
-        }
-    }
 
     // part 2
     char currentPath[MAX_FILENAME_LENGTH] = "/"; // Root directory to start
