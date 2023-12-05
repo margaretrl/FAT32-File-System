@@ -11,10 +11,10 @@ The purpose of this project is to familiarize you with basic file-system design 
 
 ### Part 1: Mount the Image File
 - **Responsibilities**:
-- [ ] Mount the image file through command line arguments (./filesys [FAT32 ISO]).
+- [X] Mount the image file through command line arguments (./filesys [FAT32 ISO]).
 - [ ] Read the image file and implement the correct structure to store and navigate the FAT32 format.
-- [ ] Close the program and return an error message if the file does not exist.
-- [ ] Implement info command to parse and display boot sector data.
+- [X] Close the program and return an error message if the file does not exist.
+- [X] Implement info command to parse and display boot sector data.
 - [ ] Implement exit command to safely close the program and free resources.
 - **Completed by**: 
 - **Assigned to**: Margaret Rivas
