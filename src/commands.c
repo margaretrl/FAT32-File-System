@@ -24,7 +24,8 @@ void updateCurrentPath(const char *newdirectory) {
     // Ensure buffer overflow is prevented in currentPath
 }
 */
-void infocmd(const BootSector *bs) {
+/*
+void infocmd(const BootSectorData *bs) {
     if (bs == NULL) {
         printf("Error: Boot sector data is not available.\n");
         return;
@@ -36,7 +37,7 @@ void infocmd(const BootSector *bs) {
     printf("Total Number of Clusters in Data Region: %u\n", bs->totalClusters);
     printf("Number of Entries in One FAT: %u\n", bs->fatEntries);
     printf("Size of Image in Bytes: %u\n", bs->imageSize);
-}
+}*/
 
 
 

@@ -8,7 +8,7 @@
 
 //bool isValidDirectory(const char *dirname);
 //void updateCurrentPath(const char *newDir);
-void infocmd(const BootSector *bs);
+void infocmd(const BootSectorData *bs);
 void cdcmd(char* command, int cmdlength);
 
 
