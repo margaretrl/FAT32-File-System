@@ -22,12 +22,12 @@ typedef struct {
 */
 
 typedef struct {
-    unsigned int bytesPerSector;
+    uint16_t bytesPerSector;
     unsigned int sectorsPerCluster;
     unsigned int firstDataSector;
     unsigned int rootCluster;
     unsigned int rootClusterPosition;
-    unsigned int totalClusters;
+    uint32_t totalClusters;
     unsigned int numEntriesInFAT;
     unsigned int sizeOfImage;
 } BootSectorData;
