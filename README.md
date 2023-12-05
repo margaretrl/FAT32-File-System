@@ -25,7 +25,7 @@ The purpose of this project is to familiarize you with basic file-system design 
 - [ ] Implement `ls` command to list directories in the current working directory.
 - [ ] Error handling for non-existent directories or incorrect directory names.
 - **Completed by**: 
-- **Assigned to**:Margaret Rivas and Hannah Housand
+- **Assigned to**: Margaret Rivas and Hannah Housand
 
 ### Part 3: Create [NOT REQUIRED ANYMORE]
 - **Responsibilities**:
