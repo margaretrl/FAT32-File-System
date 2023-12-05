@@ -110,17 +110,27 @@ void changeDirectory(FILE *imageFile, BootSectorData bootSectorData, char *path,
 }
 
 void listDirectory(FILE *imageFile, BootSectorData bootSectorData, char *path) {
-    // List all files and directories in the current directory
-    // For simplicity, this function assumes the current directory is the root directory
-    // A real implementation should find the correct directory based on 'path'
+    unsigned int cluster = bootSectorData.rootClusterPosition;
 
-    DirectoryEntry entry;
-    // Assuming root directory for simplicity
-    readDirectoryEntry(imageFile, bootSectorData, bootSectorData.rootCluster, &entry);
+    while (cluster != 0xFFFFFFFF) {
+        DirectoryEntry entries[SECTOR_SIZE / DIR_ENTRY_SIZE];
+        readDirectoryEntries(imageFile, bootSectorData, cluster, entries);
 
-    // Display the entry - this is a simplified display
-    printf("%s\n", entry.name);
+        for (int i = 0; i < SECTOR_SIZE / DIR_ENTRY_SIZE; ++i) {
+            if (entries[i].name[0] == 0x00) {
+                return; // End of directory entries
+            }
+
+            if (entries[i].name[0] != 0xE5) { // Skip deleted entries
+                printf("%s\n", entries[i].name); // Print the entry name
+            }
+        }
+
+        cluster = getNextCluster(imageFile, bootSectorData, cluster);
+    }
 }
+
+
 
 void readDirectoryEntry(FILE *imageFile, BootSectorData bootSectorData, unsigned int cluster, DirectoryEntry *entry) {
     // Calculate the sector number for the cluster
@@ -139,4 +149,38 @@ void readDirectoryEntry(FILE *imageFile, BootSectorData bootSectorData, unsigned
     entry->attributes = buffer[11]; // The attributes byte
 }
 
+
+void readDirectoryEntries(FILE *imageFile, BootSectorData bootSectorData, unsigned int cluster, DirectoryEntry *entries) {
+    unsigned int sectorNum = firstSectorOfCluster(cluster, &bootSectorData);
+    unsigned char buffer[SECTOR_SIZE * bootSectorData.sectorsPerCluster];
+    size_t offset = 0;
+
+    // Read all sectors in the cluster
+    for (int i = 0; i < bootSectorData.sectorsPerCluster; ++i) {
+        fseek(imageFile, (sectorNum + i) * SECTOR_SIZE, SEEK_SET);
+        fread(buffer + offset, SECTOR_SIZE, 1, imageFile);
+        offset += SECTOR_SIZE;
+    }
+
+    // Parse the directory entries
+    for (int i = 0; i < SECTOR_SIZE * bootSectorData.sectorsPerCluster; i += DIR_ENTRY_SIZE) {
+        memcpy(&entries[i / DIR_ENTRY_SIZE], buffer + i, DIR_ENTRY_SIZE);
+    }
+}
+
+
+
+unsigned int getNextCluster(FILE *imageFile, BootSectorData bootSectorData, unsigned int currentCluster) {
+    uint32_t FATOffset = currentCluster * 4; // 4 bytes per FAT entry
+    unsigned int FATSecNum = bootSectorData.fatStartSector + (FATOffset / SECTOR_SIZE);
+    unsigned int FATEntOffset = FATOffset % SECTOR_SIZE;
+
+    unsigned char buffer[4];
+    fseek(imageFile, FATSecNum * SECTOR_SIZE + FATEntOffset, SEEK_SET);
+    fread(buffer, sizeof(buffer), 1, imageFile);
+
+    unsigned int nextCluster = *((unsigned int *)buffer) & 0x0FFFFFFF;
+    if (nextCluster >= 0x0FFFFFF8) return 0xFFFFFFFF; // End of cluster chain
+    return nextCluster;
+}
 

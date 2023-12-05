@@ -33,6 +33,11 @@ BootSectorData parseBootSector(FILE *imageFile) {
     return bootSectorData;
 }
 
+
+
+
+
+
 /*// Fat32 functions
 #include "fat32.h"
 
