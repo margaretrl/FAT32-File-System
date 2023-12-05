@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
 #include <string.h>
 #include "fat32.h"
 
+
 #define SECTOR_SIZE 512
 #define DIR_ENTRY_SIZE 32
 #define MAX_FILENAME_LENGTH 255
@@ -244,4 +245,23 @@ void readDirectoryEntry(FILE *imageFile, BootSectorData bootSectorData, unsigned
     strncpy(entry->name, buffer, 11); // Copy the first 11 bytes as the file name
     entry->name[11] = '\0'; // Null-terminate the string
     entry->attributes = buffer[11]; // The attributes byte
+}
+
+//part 3 
+int create_directory(const char *dirname) {
+    char command[256];
+
+    // Construct the shell command
+    snprintf(command, sizeof(command), "mkdir %s 2>/dev/null", dirname);
+
+    // Execute the command and check the return value
+    int result = system(command);
+
+    if (result == 0) {
+        printf("Directory '%s' created successfully.\n", dirname);
+    } else {
+        fprintf(stderr, "Error: Failed to create directory '%s' or it already exists.\n", dirname);
+    }
+
+    return result;
 }
