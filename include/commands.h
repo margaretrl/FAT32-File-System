@@ -5,13 +5,12 @@
 #include <stdio.h>
 #include <string.h> // dont know if im allowed to include this
 
-
-//bool isValidDirectory(const char *dirname);
-//void updateCurrentPath(const char *newDir);
-void infocmd(const BootSectorData *bs);
 void cdcmd(char* command, int cmdlength);
-// Function to display boot sector information
-void displayInfo(BootSectorData bootSectorData);
+void infocmd(BootSectorData bootSectorData);
+// New function declarations for Part 2
+void changeDirectory(FILE *imageFile, BootSectorData bootSectorData, char *path, char *newDir);
+void listDirectory(FILE *imageFile, BootSectorData bootSectorData, char *path);
+void readDirectoryEntry(FILE *imageFile, BootSectorData bootSectorData, unsigned int cluster, DirectoryEntry *entry);
 
 
 #endif

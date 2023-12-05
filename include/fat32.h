@@ -5,21 +5,17 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-//#define MAX_FILENAME_LENGTH 14
-#define DELETED_ENTRY 0xE5
-#define EMPTY_ENTRY 0x00
-/*
-typedef struct {
-    uint32_t rootCluster;       // Position of root cluster
-    uint16_t bytesPerSector;    // Bytes per sector
-    uint8_t sectorsPerCluster;  // Sectors per cluster
-    uint32_t totalClusters;     // Total number of clusters in data region
-    uint32_t fatEntries;        // Number of entries in one FAT
-    uint32_t imageSize;         // Size of image in bytes
-    // ... other fields as necessary ...
-} BootSector;
-*/
+// #define MAX_FILENAME_LENGTH 255
+// #define DELETED_ENTRY 0xE5
+// #define EMPTY_ENTRY 0x00
+#define SECTOR_SIZE 512
+#define DIR_ENTRY_SIZE 32
+#define MAX_FILENAME_LENGTH 255
+
 
 typedef struct {
     uint16_t bytesPerSector;
@@ -31,8 +27,18 @@ typedef struct {
     unsigned int numEntriesInFAT;
     unsigned int sizeOfImage;
 } BootSectorData;
+
 // Function prototype
 unsigned int firstSectorOfCluster(unsigned int cluster, const BootSectorData *bootSectorData);
+typedef struct {
+    char name[MAX_FILENAME_LENGTH];
+    unsigned char attributes;
+    unsigned int firstCluster;
+    unsigned int fileSize;
+} DirectoryEntry;
+
+
+BootSectorData parseBootSector(FILE *imageFile);
 
 
 /*

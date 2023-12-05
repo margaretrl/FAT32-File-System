@@ -4,6 +4,34 @@ unsigned int firstSectorOfCluster(unsigned int cluster, const BootSectorData *bo
     return ((cluster - 2) * bootSectorData->sectorsPerCluster) + bootSectorData->firstDataSector;
 }
 
+//read and parse boot sector
+BootSectorData parseBootSector(FILE *imageFile) {
+    BootSectorData bootSectorData;
+    unsigned char buffer[SECTOR_SIZE];
+
+// Reading the first sector
+    fseek(imageFile, 0, SEEK_SET);
+    fread(buffer, SECTOR_SIZE, 1, imageFile);
+
+// Parsing necessary fields
+    bootSectorData.bytesPerSector = buffer[11] + (buffer[12] << 8);
+    bootSectorData.sectorsPerCluster = buffer[13];
+    uint32_t reservedSectors = buffer[14] + (buffer[15] << 8);
+    uint32_t numFATs = buffer[16];
+    uint32_t totalSectors = buffer[32] + (buffer[33] << 8) + (buffer[34] << 16) + (buffer[35] << 24);
+    uint32_t fatSize = buffer[36] + (buffer[37] << 8) + (buffer[38] << 16) + (buffer[39] << 24);
+    bootSectorData.rootClusterPosition = buffer[44] + (buffer[45] << 8) + (buffer[46] << 16) + (buffer[47] << 24);
+
+// Calculating total clusters and size of image
+    uint32_t totalDataSectors = totalSectors - (reservedSectors + (numFATs * fatSize));
+    bootSectorData.totalClusters = totalDataSectors / bootSectorData.sectorsPerCluster;
+    //bootSectorData.totalClusters = ((fatSize - reservedSectors) / bootSectorData.sectorsPerCluster);
+    bootSectorData.numEntriesInFAT = ((fatSize * bootSectorData.bytesPerSector)/ 4);  // Each FAT entry is 4 bytes
+    fseek(imageFile, 0, SEEK_END);
+    bootSectorData.sizeOfImage = ftell(imageFile);
+
+    return bootSectorData;
+}
 
 /*// Fat32 functions
 #include "fat32.h"
