@@ -14,8 +14,8 @@ The purpose of this project is to familiarize you with basic file-system design 
 - [ ] Mount the image file through command line arguments (./filesys [FAT32 ISO]).
 - [ ] Read the image file and implement the correct structure to store and navigate the FAT32 format.
 - [ ] Close the program and return an error message if the file does not exist.
-- [ ]Implement info command to parse and display boot sector data.
- - [ ]Implement exit command to safely close the program and free resources.
+- [ ] Implement info command to parse and display boot sector data.
+- [ ] Implement exit command to safely close the program and free resources.
 - **Completed by**: 
 - **Assigned to**: Margaret Rivas
 
@@ -46,23 +46,23 @@ The purpose of this project is to familiarize you with basic file-system design 
 
 ### Part 5: Update
 - **Responsibilities**:
-  - Implement `write [FILENAME] [STRING]` command to write data to a file.
-  - Implement `append [FILENAME] [STRING]` command to append data to a file.
-  - Error handling for non-existent files, directories, or incorrect file modes.
+- [ ] Implement `write [FILENAME] [STRING]` command to write data to a file.
+- [ ] Implement `append [FILENAME] [STRING]` command to append data to a file.
+- [ ] Error handling for non-existent files, directories, or incorrect file modes.
 - **Completed by**: 
 - **Assigned to**: Margaret Rivas
 
 ### Part 6: Delete
 - **Responsibilities**:
-  - Implement `rm [FILENAME]` command to delete a file.
-  - Implement `rmdir [DIRNAME]` command to remove a directory.
-  - Error handling for non-existent files, directories, or when files are opened.
+- [ ] Implement `rm [FILENAME]` command to delete a file.
+- [ ] Implement `rmdir [DIRNAME]` command to remove a directory.
+- [ ] Error handling for non-existent files, directories, or when files are opened.
 - **Completed by**: 
 - **Assigned to**: Sophia Quinoa
 
 ### Extra Credit
 - **Responsibilities**:
-  - Implement `rm -r [DIRNAME]` command for recursive deletion of directories and their contents.
+- [ ] Implement `rm -r [DIRNAME]` command for recursive deletion of directories and their contents.
 - **Completed by**: 
 - **Assigned to**: N/A
 
