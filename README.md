@@ -27,7 +27,7 @@ The purpose of this project is to familiarize you with basic file-system design 
 - **Completed by**: 
 - **Assigned to**:Margaret Rivas and Hannah Housand
 
-~~### Part 3: Create~~
+### Part 3: Create [NOT REQUIRED ANYMORE]
 - **Responsibilities**:
 - [ ] Implement `mkdir [DIRNAME]` command to create a new directory.
 - [ ] Implement `creat [FILENAME]` command to create a new file with 0 bytes size.
@@ -44,7 +44,7 @@ The purpose of this project is to familiarize you with basic file-system design 
 - **Completed by**: 
 - **Assigned to**: Margaret Rivas, Hannah Housand, Sophia Quinoa
 
-~~### Part 5: Update~~
+### Part 5: Update [NOT REQUIRED ANYMORE]
 - **Responsibilities**:
 - [ ] Implement `write [FILENAME] [STRING]` command to write data to a file.
 - [ ] Implement `append [FILENAME] [STRING]` command to append data to a file.
@@ -52,7 +52,7 @@ The purpose of this project is to familiarize you with basic file-system design 
 - **Completed by**:
 - **Assigned to**: Margaret Rivas
 
-~~### Part 6: Delete~~
+### Part 6: Delete [NOT REQUIRED ANYMORE]
 - **Responsibilities**:
 - [ ] Implement `rm [FILENAME]` command to delete a file.
 - [ ] Implement `rmdir [DIRNAME]` command to remove a directory.
