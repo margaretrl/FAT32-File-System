@@ -21,7 +21,7 @@ BootSectorData parseBootSector(FILE *imageFile) {
     uint32_t totalSectors = buffer[32] + (buffer[33] << 8) + (buffer[34] << 16) + (buffer[35] << 24);
     uint32_t fatSize = buffer[36] + (buffer[37] << 8) + (buffer[38] << 16) + (buffer[39] << 24);
     bootSectorData.rootClusterPosition = buffer[44] + (buffer[45] << 8) + (buffer[46] << 16) + (buffer[47] << 24);
-
+    bootSectorData.fatStartSector = (numFATs * fatSize) + reservedSectors;
 // Calculating total clusters and size of image
     uint32_t totalDataSectors = totalSectors - (reservedSectors + (numFATs * fatSize));
     bootSectorData.totalClusters = totalDataSectors / bootSectorData.sectorsPerCluster;

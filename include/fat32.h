@@ -26,6 +26,7 @@ typedef struct {
     uint32_t totalClusters;
     unsigned int numEntriesInFAT;
     unsigned int sizeOfImage;
+    unsigned int fatStartSector;
 } BootSectorData;
 
 // Function prototype
