@@ -5,4 +5,6 @@
 #include <stdio.h>
 #include <string.h> // dont know if im allowed to include this
 
+void printFileSystemInfo(BootSectorData bs);
+
 #endif
