@@ -17,3 +17,25 @@ void printFileSystemInfo(BootSectorData bs) {
     printf("BPB_FATSz32 : %x\n", bs.BPB_FATSz32);
     printf("\n");
 }
+
+void lsfunction(struct DirectoryEntry dir[])
+{
+    int i = 0;
+    while (i < 16)
+    {
+        char word[12];
+        memset(&word, 0, 12);
+        //Checks if the fils are read only, subdirectories, 0X30.
+        //Does not print the deleted file (signed char)0Xe5.
+        if ((dir[i].DIR_Attr == 0x01 ||
+             dir[i].DIR_Attr == 0x10 ||
+             dir[i].DIR_Attr == 0x20 ||
+             dir[i].DIR_Attr == 0x30) &&
+            dir[i].DIR_Name[0] != (signed char)0xe5)
+        {
+            strncpy(word, dir[i].DIR_Name, 11);
+            printf("%s\n", word);
+        }
+        i++;
+    }
+}

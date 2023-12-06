@@ -345,24 +345,7 @@ int main(int argc, char *argv[])
             else if (strcmp("ls", token[0]) == 0)
             {
 
-                int i = 0;
-                while (i < 16)
-                {
-                    char word[12];
-                    memset(&word, 0, 12);
-                    //Checks if the fils are read only, subdirectories, 0X30.
-                    //Does not print the deleted file (signed char)0Xe5.
-                    if ((dir[i].DIR_Attr == 0x01 ||
-                         dir[i].DIR_Attr == 0x10 ||
-                         dir[i].DIR_Attr == 0x20 ||
-                         dir[i].DIR_Attr == 0x30) &&
-                        dir[i].DIR_Name[0] != (signed char)0xe5)
-                    {
-                        strncpy(word, dir[i].DIR_Name, 11);
-                        printf("%s\n", word);
-                    }
-                    i++;
-                }
+                lsfunction(dir);
                 continue;
             }
 

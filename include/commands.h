@@ -6,5 +6,6 @@
 #include <string.h> // dont know if im allowed to include this
 
 void printFileSystemInfo(BootSectorData bs);
+void lsfunction(struct DirectoryEntry dir[]);
 
 #endif
