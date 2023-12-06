@@ -27,7 +27,6 @@ typedef struct {
     char BS_VolLab[11];
     int32_t BPB_FATSz32;
     int32_t BPB_RootClus;
-
     int32_t RootDirSectors;
     int32_t FirstDataSector;
     int32_t FirstSectorofCluster;

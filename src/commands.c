@@ -2,13 +2,8 @@
 
 
 void printFileSystemInfo(BootSectorData bs) {
-    printf("BPB_BytesPerSec : %d\n", bs.BPB_BytesPerSec);
-    printf("BPB_BytesPerSec : %x\n", bs.BPB_BytesPerSec);
-    printf("\n");
-
-    printf("BPB_SecPerClus : %d\n", bs.BPB_SecPerClus);
-    printf("BPB_SecPerClus : %x\n", bs.BPB_SecPerClus);
-    printf("\n");
+    printf("Bytes per Sector: %d\n", bs.BPB_BytesPerSec);
+    printf("Sectors per Cluster: %d\n", bs.BPB_SecPerClus);
 
     printf("BPB_RsvdSecCnt : %d\n", bs.BPB_RsvdSecCnt);
     printf("BPB_RsvdSecCnt : %x\n", bs.BPB_RsvdSecCnt);
