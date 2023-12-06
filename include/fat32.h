@@ -18,62 +18,31 @@
 
 
 typedef struct {
-    uint16_t bytesPerSector;
-    unsigned int sectorsPerCluster;
-    unsigned int firstDataSector;
-    unsigned int rootCluster;
-    unsigned int rootClusterPosition;
-    uint32_t totalClusters;
-    unsigned int numEntriesInFAT;
-    unsigned int sizeOfImage;
-    unsigned int fatStartSector;
+    char BS_OEMName[8];
+    int16_t BPB_BytesPerSec;
+    int8_t BPB_SecPerClus;
+    int16_t BPB_RsvdSecCnt;
+    int8_t BPB_NumFATs;
+    int16_t BPB_RootEntCnt;
+    char BS_VolLab[11];
+    int32_t BPB_FATSz32;
+    int32_t BPB_RootClus;
+
+    int32_t RootDirSectors;
+    int32_t FirstDataSector;
+    int32_t FirstSectorofCluster;
+    int32_t root_address;
 } BootSectorData;
 
-// Function prototype
-unsigned int firstSectorOfCluster(unsigned int cluster, const BootSectorData *bootSectorData);
-typedef struct {
-    char name[MAX_FILENAME_LENGTH];
-    unsigned char attributes;
-    unsigned int firstCluster;
-    unsigned int fileSize;
-} DirectoryEntry;
+struct __attribute__((__packed__)) DirectoryEntry
+{
+    char DIR_Name[11];
+    uint8_t DIR_Attr;
+    uint8_t Unused1[8];
+    uint16_t DIR_FirstClusterHigh;
+    uint8_t Unused2[4];
+    uint16_t DIR_FirstClusterLow;
+    uint32_t DIR_FileSize;
+};
 
-
-BootSectorData parseBootSector(FILE *imageFile);
-
-
-/*
-typedef struct {
-    uint32_t sectorsPerCluster;
-    uint32_t firstDataSector;
-    uint32_t bytesPerSector;
-    // ... other FAT32 parameters ...
-} FAT32VolumeInfo;
-
-extern FAT32VolumeInfo fat32VolumeInfo;
-
-
-typedef struct {
-    char name[MAX_FILENAME_LENGTH];
-    bool isDirectory;
-    // ... other properties ...
-} DirectoryEntry;
-
-typedef struct {
-    char name[11];  // 8+3 name format
-    uint8_t attr;   // Attributes byte
-    uint16_t firstClusterHigh; // High bytes of the first cluster
-    uint16_t firstClusterLow;  // Low bytes of the first cluster
-    // ... other fields as necessary ...
-} FAT32DirEntry;
-
-void getCurrentClusterData(uint32_t clusterNumber, FAT32DirEntry *buffer, size_t bufferSize);
-uint32_t getNextCluster(uint32_t currentCluster);
-bool isEntryValid(const FAT32DirEntry entry);
-long clusterToByteOffset(uint32_t clusterNumber);
-
-
-DirectoryEntry* getCurrentDirectoryEntries();
-size_t getNumberOfEntriesInCurrentDirectory();
-*/
 #endif
