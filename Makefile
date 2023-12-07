@@ -6,19 +6,20 @@ INC = -I include
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
-# Target executable name
+# Target executable name and bin directory
 TARGET = filesys
+BINDIR = bin
 
-all: $(TARGET)
+all: $(BINDIR)/$(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(TARGET)
+$(BINDIR)/$(TARGET): $(OBJ)
+	mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $(OBJ) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	rm -f src/*.o $(TARGET)
+	rm -f src/*.o $(BINDIR)/$(TARGET)
 
 .PHONY: all clean
-

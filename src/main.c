@@ -86,12 +86,12 @@ int main(int argc, char *argv[])
 
         open_file = 1;
     }
-    char command[100];
-    char imagePath[256] = "/";  // Initial path
+    //char command[100];
+    //char imagePath[256] = "/";  // Initial path
 
     // part 2
     char currentPath[MAX_FILENAME_LENGTH] = "/"; // Root directory to start
-    char parameter[100];
+    //char parameter[100];
     while (1)
     {
         // Print out the mfs prompt
