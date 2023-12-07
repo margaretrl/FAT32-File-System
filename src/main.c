@@ -153,117 +153,10 @@ int main(int argc, char *argv[])
         }
 
             //opens the file
-        else if (strcmp("open", token[0]) == 0)
-        {
-            //printf("%d\n",openFilesCount);
 
-            //Check if there is no file name
-            if (token[1] == NULL || token[2] == NULL)
-            {
-                printf("Error - Usage: open [FILENAME] [FLAGS]\n");
-                continue;
-            }
-            else
-            {
-                int result = openFile(token[1],"-r",openFilesCount,openFiles); //token[2] is hardcoded in atm!!
-                if (result == 0) { // Assuming 0 is the success code
-                    // Check if the file is in the openFiles array
-                    openFilesCount++;
-                    for (int i = 0; i < openFilesCount; i++) {
-                        //printf("%s\n",openFiles[i].filename);
-                        if (strcmp(openFiles[i].filename, token[1]) == 0) {
-                            printf("File is successfully opened.\n");
-                            //openFilesCount++;
-                            break;
-                        }
-                    }
-                    
-                } else {
-                    printf("Failed to open file.\n");
-                }
-
-                /*
-                imageFile = fopen(token[1], "r");
-                //Check if the given file name exists
-                if (imageFile == NULL)
-                {
-                    printf("Error: File system image not found.\n");
-                    continue;
-                }
-                    //Check if the file is already open
-                else if (open_file == 1)
-                {
-                    printf("Error: File system image already open.\n");
-                    continue;
-                }
-                else
-                {
-                    //Read in from the file
-                    fseek(imageFile, 11, SEEK_SET);
-                    fread(&bs.bytesPerSector, 2, 1, imageFile);
-
-                    fseek(imageFile, 13, SEEK_SET);
-                    fread(&bs.sectorsPerCluster, 1, 1, imageFile);
-
-                    fseek(imageFile, 14, SEEK_SET);
-                    fread(&bs.reservedSectorCnt, 1, 2, imageFile);
-
-                    fseek(imageFile, 16, SEEK_SET);
-                    fread(&bs.FATnum, 1, 1, imageFile);
-
-                    fseek(imageFile, 36, SEEK_SET);
-                    fread(&bs.FATSize32, 1, 4, imageFile);
-
-                    bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
-                                   (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
-
-                    fseek(imageFile, bs.rootAddress, SEEK_SET);
-                    int i = 0;
-                    for (i = 0; i < 16; i++)
-                    {
-                        fread(&dir[i], sizeof(dir[i]), 1, imageFile);
-                    }
-
-                    printf("File successfully opened!!\n");
-                    open_file = 1;
-                }*/
-            }
-        }
 
             //Closes the file that is open
-        else if (strcmp("close", token[0]) == 0)
-        {
-            // if (open_file == 1)
-            // {
-            //     fclose(imageFile);
-            //     imageFile = NULL;
-            //     printf("File successfully closed!!\n");
-            //     open_file = 0;
-            // }
-            // else
-            // {
-            //     printf("Error: File system not open.\n");
-            // }
-            // continue;
-            
-            // Cmd use check
-            if(token[1] == NULL ){
-                printf("Error - Usage: close [FILENAME]\n");
-                continue;
-            }
-            else{
-                if(closeFile(token[1], openFilesCount, openFiles) == 0){
-                    printf("File sucessfully closed\n");
-                    openFilesCount--; // Decrement the count of open files
-                }
-                else{
-                    printf("Error: File is not open.\n");
-                }
-            }
 
-
-
-        }
 
         //Exits from the img shell
         else if (strcmp("exit", token[0]) == 0)
@@ -277,15 +170,19 @@ int main(int argc, char *argv[])
         }
 
             //info, stat, ls, get, cd, read works only when the fat32 image is open.
-        else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
-                  (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) && (img_mounted == 0))
+        else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
+                  (strcmp("cd", token[0]) == 0) || (strcmp("open", token[0]) == 0) ||
+                  (strcmp("close", token[0]) == 0) || (strcmp("lsof", token[0]) == 0) ||
+                  (strcmp("lseek", token[0]) == 0) || (strcmp("read", token[0]) == 0))
+                  && (img_mounted == 0))
         {
             printf("Error: Image must be mounted first.\n");
         }
-        else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
-                  (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) &&(img_mounted == 1))
+        else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
+                  (strcmp("cd", token[0]) == 0) || (strcmp("open", token[0]) == 0) ||
+                  (strcmp("close", token[0]) == 0) || (strcmp("lsof", token[0]) == 0) ||
+                 (strcmp("lseek", token[0]) == 0) || (strcmp("read", token[0]) == 0))
+                 && (img_mounted == 1))
         {
             //Prints out all the information abou the fat32 image file.
             if (strcmp("info", token[0]) == 0)
@@ -293,7 +190,7 @@ int main(int argc, char *argv[])
                 printFileSystemInfo(bs);
                 continue;
             }
-
+            /*
                 //Prints out the attribute, size, and lower cluster number
                 //for the specified folder or file.
             else if (strcmp("stat", token[0]) == 0)
@@ -312,7 +209,7 @@ int main(int argc, char *argv[])
                            dir[index_counter].fileSize, dir[index_counter].firstClusterLow);
                 }
                 continue;
-            }
+            }*/
                 //Implementing ls function
                 //List downs the files from a current directory when fat32 image file is open.
             else if (strcmp("ls", token[0]) == 0)
@@ -377,6 +274,121 @@ int main(int argc, char *argv[])
                     }
                 }
                 continue;
+            }
+            else if (strcmp("open", token[0]) == 0)
+            {
+                //printf("%d\n",openFilesCount);
+
+                //Check if there is no file name
+                if (token[1] == NULL || token[2] == NULL)
+                {
+                    printf("Error - Usage: open [FILENAME] [FLAGS]\n");
+                    continue;
+                }
+                else
+                {
+                    int result = openFile(token[1],"-r",openFilesCount,openFiles); //token[2] is hardcoded in atm!!
+                    if (result == 0) { // Assuming 0 is the success code
+                        // Check if the file is in the openFiles array
+                        openFilesCount++;
+                        for (int i = 0; i < openFilesCount; i++) {
+                            //printf("%s\n",openFiles[i].filename);
+                            if (strcmp(openFiles[i].filename, token[1]) == 0) {
+                                printf("File is successfully opened.\n");
+                                //openFilesCount++;
+                                break;
+                            }
+                        }
+
+                    } else {
+                        printf("Failed to open file.\n");
+                    }
+
+                    /*
+                    imageFile = fopen(token[1], "r");
+                    //Check if the given file name exists
+                    if (imageFile == NULL)
+                    {
+                        printf("Error: File system image not found.\n");
+                        continue;
+                    }
+                        //Check if the file is already open
+                    else if (open_file == 1)
+                    {
+                        printf("Error: File system image already open.\n");
+                        continue;
+                    }
+                    else
+                    {
+                        //Read in from the file
+                        fseek(imageFile, 11, SEEK_SET);
+                        fread(&bs.bytesPerSector, 2, 1, imageFile);
+
+                        fseek(imageFile, 13, SEEK_SET);
+                        fread(&bs.sectorsPerCluster, 1, 1, imageFile);
+
+                        fseek(imageFile, 14, SEEK_SET);
+                        fread(&bs.reservedSectorCnt, 1, 2, imageFile);
+
+                        fseek(imageFile, 16, SEEK_SET);
+                        fread(&bs.FATnum, 1, 1, imageFile);
+
+                        fseek(imageFile, 36, SEEK_SET);
+                        fread(&bs.FATSize32, 1, 4, imageFile);
+
+                        bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
+                                       (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
+
+                        fseek(imageFile, bs.rootAddress, SEEK_SET);
+                        int i = 0;
+                        for (i = 0; i < 16; i++)
+                        {
+                            fread(&dir[i], sizeof(dir[i]), 1, imageFile);
+                        }
+
+                        printf("File successfully opened!!\n");
+                        open_file = 1;
+                    }*/
+                }
+            }
+            else if (strcmp("close", token[0]) == 0)
+            {
+                // if (open_file == 1)
+                // {
+                //     fclose(imageFile);
+                //     imageFile = NULL;
+                //     printf("File successfully closed!!\n");
+                //     open_file = 0;
+                // }
+                // else
+                // {
+                //     printf("Error: File system not open.\n");
+                // }
+                // continue;
+
+                // Cmd use check
+                if(token[1] == NULL ){
+                    printf("Error - Usage: close [FILENAME]\n");
+                    continue;
+                }
+                else{
+                    if(closeFile(token[1], openFilesCount, openFiles) == 0){
+                        printf("File sucessfully closed\n");
+                        openFilesCount--; // Decrement the count of open files
+                    }
+                    else{
+                        printf("Error: File is not open.\n");
+                    }
+                }
+            }
+            else if (strcmp("lsof", token[0]) == 0)
+            {
+                printf("this is gonna be the lsof function\n");
+            }
+            else if (strcmp("lseek", token[0]) == 0)
+            {
+                printf("this is gonna be the lseek function\n");
+
             }
             else if (strcmp("read", token[0]) == 0)
             {
