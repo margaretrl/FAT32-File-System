@@ -1,6 +1,10 @@
 #include "fat32.h"
 #include "functions.h"
+#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
 
+
+int openFilesCount = 0; // Current number of open files
+OpenFile openFiles[MAX_OPEN_FILES];
 
 
 
@@ -13,20 +17,6 @@ void printFileSystemInfo(BootSectorData bs) {
     printf("Root Cluster: %d\n", bs.BPB_RootClus);
     printf("First Data Sector: %d\n",bs.BPB_RsvdSecCnt + (bs.BPB_NumFATs * bs.BPB_FATSz32));
     printf("Total Sectors: %d\n",bs.TotalSectors);
-    
-    //printf("\n");
-
-    // printf("BPB_RsvdSecCnt : %d\n", bs.BPB_RsvdSecCnt);
-    // printf("BPB_RsvdSecCnt : %x\n", bs.BPB_RsvdSecCnt);
-    // printf("BPB_NumFATs : %d\n", bs.BPB_NumFATs);
-    // printf("BPB_NumFATs : %x\n", bs.BPB_NumFATs);
-    // printf("\n");
-
-    // printf("BPB_FATSz32 : %d\n", bs.BPB_FATSz32);
-    // printf("BPB_FATSz32 : %x\n", bs.BPB_FATSz32);
-    // printf("\n");
-
-    // printf("\n"); 
 }
 
 void lsfunction(struct DirectoryEntry dir[])
@@ -60,3 +50,34 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *ptr_file, Bo
         fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
     }
 }
+
+int openFile(const char* filename, const char* mode) {
+    // Check if the file is already open
+    for (int i = 0; i < openFilesCount; i++) {
+        if (strcmp(openFiles[i].filename, filename) == 0) {
+            printf("Error: File is already opened.\n");
+            return -1;
+        }
+    }
+
+    // Validate the mode
+    if (strcmp(mode, "-r") != 0 && strcmp(mode, "-w") != 0 &&
+        strcmp(mode, "-rw") != 0 && strcmp(mode, "-wr") != 0) {
+        printf("Error: Invalid mode.\n");
+        return -1;
+    }
+
+    if (openFilesCount < MAX_OPEN_FILES) {
+        strcpy(openFiles[openFilesCount].filename, filename);
+        strcpy(openFiles[openFilesCount].mode, mode);
+        openFiles[openFilesCount].offset = 0;
+        // Set other necessary file info, like cluster number, etc.
+
+        openFilesCount++;
+        return 0; // Success
+    } else {
+        printf("Error: Too many open files.\n");
+        return -1;
+    }
+}
+

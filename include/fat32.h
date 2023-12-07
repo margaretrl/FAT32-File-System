@@ -47,4 +47,12 @@ struct __attribute__((__packed__)) DirectoryEntry
     uint32_t DIR_FileSize;
 };
 
+typedef struct {
+    char filename[FILENAME_MAX]; // Assuming FILENAME_MAX is defined
+    char mode[3]; // Store "-r", "-w", "-rw", or "-wr"
+    int offset; // Current offset in the file
+    // Add other necessary fields, like cluster number, directory entry info, etc.
+} OpenFile;
+
+
 #endif

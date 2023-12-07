@@ -8,5 +8,8 @@
 void printFileSystemInfo(BootSectorData bs);
 void lsfunction(struct DirectoryEntry dir[]);
 void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *ptr_file, BootSectorData bs);
+int openFile(const char* filename, const char* mode);
+
+
 
 #endif

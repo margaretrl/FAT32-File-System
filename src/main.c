@@ -19,6 +19,10 @@ int32_t RootDirSectors = 0;
 int32_t FirstDataSector = 0;
 int32_t FirstSectorofCluster = 0;
 
+#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
+
+
+
 int open_file = 0;
 int main(int argc, char *argv[])
 {
@@ -97,6 +101,9 @@ int main(int argc, char *argv[])
         // Print out the mfs prompt
         printf("[%s]%s> ", argv[1], currentPath);
 
+        OpenFile openFiles[MAX_OPEN_FILES];
+        int openFilesCount = 0; // Current number of open files
+
         // Read the command from the commandline.  The
         // maximum command that will be read is MAX_COMMAND_SIZE
         // This while command will wait here until the user
@@ -142,6 +149,7 @@ int main(int argc, char *argv[])
             //opens the file
         else if (strcmp("open", token[0]) == 0)
         {
+
             //Check if there is no file name
             if (token[1] == NULL)
             {
@@ -150,6 +158,21 @@ int main(int argc, char *argv[])
             }
             else
             {
+                int result = openFile("LONGFILE", "-r");
+                if (result == 0) { // Assuming 0 is the success code
+                    // Check if the file is in the openFiles array
+                    for (int i = 0; i < openFilesCount; i++) {
+                        if (strcmp(openFiles[i].filename, "example.txt") == 0) {
+                            printf("File is successfully opened.\n");
+                            // Optionally, check other properties like mode, offset, etc.
+                            break;
+                        }
+                    }
+                } else {
+                    printf("Failed to open file.\n");
+                }
+
+                /*
                 ptr_file = fopen(token[1], "r");
                 //Check if the given file name exists
                 if (ptr_file == NULL)
@@ -193,7 +216,7 @@ int main(int argc, char *argv[])
 
                     printf("File successfully opened!!\n");
                     open_file = 1;
-                }
+                }*/
             }
         }
 
