@@ -161,6 +161,7 @@ int main(int argc, char *argv[])
         //Exits from the img shell
         else if (strcmp("exit", token[0]) == 0)
         {
+            //!!! are we allowed to exit when there are files open
             if (img_mounted == 1)
             {
                 fclose(imageFile);

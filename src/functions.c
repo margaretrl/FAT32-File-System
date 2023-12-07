@@ -89,11 +89,12 @@ void setFileOffset(OpenFile openFiles[], const char *filename, int newOffset)
             fileFound = 1;
 
             // Check if the new offset is larger than the file size
+            /*
             if (newOffset > openFiles[i].fileSize)
             {
                 printf("Error: Offset is larger than the file size.\n");
                 return;
-            }
+            }*/
 
             openFiles[i].offset = newOffset;
             printf("Offset of file '%s' set to %d.\n", filename, newOffset);
