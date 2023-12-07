@@ -11,7 +11,7 @@ void printFileSystemInfo(BootSectorData bs);
 void lsfunction(struct DirectoryEntry dir[]);
 void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, BootSectorData bs);
 int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]);
-
+int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]);
 
 
 #endif

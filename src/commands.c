@@ -85,3 +85,16 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 }
 
+int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]) {
+    // Check if file is open
+        for (int i = 0; i < openFilesCount; i++) {
+            if (strcmp(openFiles[i].filename, filename) == 0) {
+                // Shift all elements after the found element one position back
+                for (int j = i; j < openFilesCount - 1; j++) {
+                    openFiles[j] = openFiles[j + 1];
+                }
+                return 0;
+            }
+        }
+        return -1;
+}

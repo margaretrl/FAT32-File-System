@@ -251,31 +251,21 @@ int main(int argc, char *argv[])
                 printf("Error - Usage: close [FILENAME]\n");
                 continue;
             }
-
-            bool closed = false;
-            // Check if file is open
-            for (int i = 0; i < openFilesCount; i++) {
-                if (strcmp(openFiles[i].filename, token[1]) == 0) {
-                    // Shift all elements after the found element one position back
-                    for (int j = i; j < openFilesCount - 1; j++) {
-                        openFiles[j] = openFiles[j + 1];
-                    }
-                    openFilesCount--; // Decrement the count of open files
+            else{
+                if(closeFile(token[1], openFilesCount, openFiles) == 0){
                     printf("File sucessfully closed\n");
-                    closed = true;
-                    break;
+                    openFilesCount--; // Decrement the count of open files
                 }
-
+                else{
+                    printf("Error: File is not open.\n");
+                }
             }
 
-            // If file isnt open
-            if(!closed){
-                printf("Error: File is not open.\n");
-            }
+
 
         }
 
-            //Exits from the mfs shell
+        //Exits from the img shell
         else if (strcmp("exit", token[0]) == 0)
         {
             if (img_mounted == 1)
@@ -289,18 +279,13 @@ int main(int argc, char *argv[])
             //info, stat, ls, get, cd, read works only when the fat32 image is open.
         else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
                   (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0))
-                  && (img_mounted == 0)
-                  )
+                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) && (img_mounted == 0))
         {
-            //printf("Error: File system must be opened first.\n");
             printf("Error: Image must be mounted first.\n");
         }
         else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
                   (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) 
-                  &&(img_mounted == 1)
-                  )
+                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) &&(img_mounted == 1))
         {
             //Prints out all the information abou the fat32 image file.
             if (strcmp("info", token[0]) == 0)
