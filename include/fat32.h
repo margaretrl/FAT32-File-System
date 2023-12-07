@@ -13,7 +13,7 @@
 // #define DELETED_ENTRY 0xE5
 // #define EMPTY_ENTRY 0x00
 //#define SECTOR_SIZE 512
-#define DIR_ENTRY_SIZE 32
+//#define DIR_ENTRY_SIZE 32
 #define MAX_FILENAME_LENGTH 12
 
 
@@ -37,13 +37,13 @@ typedef struct {
 
 struct __attribute__((__packed__)) DirectoryEntry
 {
-    char DIR_Name[11];
-    uint8_t DIR_Attr;
-    uint8_t Unused1[8];
-    uint16_t DIR_FirstClusterHigh;
-    uint8_t Unused2[4];
-    uint16_t DIR_FirstClusterLow;
-    uint32_t DIR_FileSize;
+    char name[11];
+    uint8_t attributes;
+    uint8_t PlaceHolder[8]; // Do not remove
+    uint16_t firstClusterHigh;
+    uint8_t PlaceHolder2[4]; // Do not remove
+    uint16_t firstClusterLow;
+    uint32_t fileSize;
 };
 
 typedef struct {

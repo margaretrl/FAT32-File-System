@@ -28,13 +28,13 @@ void lsfunction(struct DirectoryEntry dir[])
         memset(&word, 0, 12);
         //Checks if the fils are read only, subdirectories, 0X30.
         //Does not print the deleted file (signed char)0Xe5.
-        if ((dir[i].DIR_Attr == 0x01 ||
-             dir[i].DIR_Attr == 0x10 ||
-             dir[i].DIR_Attr == 0x20 ||
-             dir[i].DIR_Attr == 0x30) &&
-            dir[i].DIR_Name[0] != (signed char)0xe5)
+        if ((dir[i].attributes == 0x01 ||
+             dir[i].attributes == 0x10 ||
+             dir[i].attributes == 0x20 ||
+             dir[i].attributes == 0x30) &&
+            dir[i].name[0] != (signed char)0xe5)
         {
-            strncpy(word, dir[i].DIR_Name, 11);
+            strncpy(word, dir[i].name, 11);
             printf("%s\n", word);
         }
         i++;
@@ -43,7 +43,7 @@ void lsfunction(struct DirectoryEntry dir[])
 
 void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *ptr_file, BootSectorData bs)
 {
-    fseek(ptr_file, LBAToOffset(dir[counter].DIR_FirstClusterLow, bs), SEEK_SET);
+    fseek(ptr_file, LBAToOffset(dir[counter].firstClusterLow, bs), SEEK_SET);
     int i = 0;
     for (i = 0; i < 16; i++)
     {

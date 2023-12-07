@@ -67,7 +67,6 @@ int main(int argc, char *argv[])
 
         fseek(ptr_file, bs.rootAddress, SEEK_SET);
 
-        //NEW CODE MARGARET
         // Saving curr pos of file ptr cus idk
         long current_position = ftell(ptr_file); 
 
@@ -83,16 +82,13 @@ int main(int argc, char *argv[])
 
         fseek(ptr_file, current_position, SEEK_SET);
 
-        int i = 0;
-        for (i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
         {
             fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
         }
 
         open_file = 1;
     }
-    //char command[100];
-    //char imagePath[256] = "/";  // Initial path
 
     // part 2
     char currentPath[MAX_FILENAME_LENGTH] = "/"; // Root directory to start
@@ -282,8 +278,8 @@ int main(int argc, char *argv[])
                     printf("Error: File not found.\n");
                 } else {
                     printf("Attribute\tSize\tStarting Cluster Number\n");
-                    printf("%d\t\t%d\t%d\n\n", dir[index_counter].DIR_Attr,
-                           dir[index_counter].DIR_FileSize, dir[index_counter].DIR_FirstClusterLow);
+                    printf("%d\t\t%d\t%d\n\n", dir[index_counter].attributes,
+                           dir[index_counter].fileSize, dir[index_counter].firstClusterLow);
                 }
                 continue;
             }
@@ -312,11 +308,11 @@ int main(int argc, char *argv[])
                         // Directory is ".." or "."
                         while (counter < 16)
                         {
-                            if (strstr(dir[counter].DIR_Name, token[1]) != NULL)
+                            if (strstr(dir[counter].name, token[1]) != NULL)
                             {
-                                if (dir[counter].DIR_FirstClusterLow == 0)
+                                if (dir[counter].firstClusterLow == 0)
                                 {
-                                    dir[counter].DIR_FirstClusterLow = 2;
+                                    dir[counter].firstClusterLow = 2;
                                 }
                                 ReadDirEntries(dir, counter, ptr_file, bs);
                                 break;
@@ -334,7 +330,7 @@ int main(int argc, char *argv[])
                             memset(word, 0, sizeof(word));
                             strncpy(word, token[1], strlen(token[1]));
 
-                            if (dir[counter].DIR_Attr != 0x20 && compare(dir[counter].DIR_Name, word))
+                            if (dir[counter].attributes != 0x20 && compare(dir[counter].name, word))
                             {
                                 // Directory is found
                                 ReadDirEntries(dir, counter, ptr_file, bs);
@@ -368,8 +364,8 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        int cluster = dir[index_counter].DIR_FirstClusterLow;
-                        int size = dir[index_counter].DIR_FileSize;
+                        int cluster = dir[index_counter].firstClusterLow;
+                        int size = dir[index_counter].fileSize;
                         FILE *file_ptr = fopen(token[1], "w");
                         fseek(ptr_file, LBAToOffset(cluster, bs), SEEK_SET);
                         char *temp_ptr = malloc(size);
@@ -401,7 +397,7 @@ int main(int argc, char *argv[])
                         int position = 0;
                         int NumOfBytes= atoi(token[2]);
 
-                        int cluster = dir[index_counter].DIR_FirstClusterLow;
+                        int cluster = dir[index_counter].firstClusterLow;
 
                         fseek(ptr_file, position + LBAToOffset(cluster, bs), SEEK_SET);
 

@@ -57,12 +57,12 @@ int match(struct DirectoryEntry dir[], char token[])
     int index = 0;
     while (index < MAX_FILE_SIZE)
     {
-        if ((dir[index].DIR_Name[0] != 0xffffffe5) &&
-            (compare(dir[index].DIR_Name, token)) &&
-            (dir[index].DIR_Attr == 0x01 ||
-             dir[index].DIR_Attr == 0x10 ||
-             dir[index].DIR_Attr == 0x20 ||
-             dir[index].DIR_Name[0] == 0x2e))
+        if ((dir[index].name[0] != 0xffffffe5) &&
+            (compare(dir[index].name, token)) &&
+            (dir[index].attributes == 0x01 ||
+             dir[index].attributes == 0x10 ||
+             dir[index].attributes == 0x20 ||
+             dir[index].name[0] == 0x2e))
         {
             return index;
         }
