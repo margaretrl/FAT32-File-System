@@ -401,6 +401,7 @@ int main(int argc, char *argv[])
 
             else if (strcmp("read", token[0]) == 0)
             {
+
                 if (token[1] == NULL || token[2] == NULL )
                 {
                     printf("Please enter the file to read in the following format: ");
