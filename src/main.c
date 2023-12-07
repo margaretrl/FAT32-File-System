@@ -383,7 +383,22 @@ int main(int argc, char *argv[])
             }
             else if (strcmp("lsof", token[0]) == 0)
             {
-                printf("this is gonna be the lsof function\n");
+                if (openFiles[0].filename[0] == '\0')
+                {
+                    // I feel like this may be wrong condition
+                    printf("No files currently open.\n");
+                }
+                else
+                {
+                    int i=0;
+                    while((i < 10) && (openFiles[i].filename[0] != '\0'))
+                    {
+                        printf("%d    %s    %s    %d    \n", i, openFiles[i].filename, openFiles[i].mode,openFiles[i].offset );
+                        i++;
+                    }
+                    //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
+
+                }
             }
             else if (strcmp("lseek", token[0]) == 0)
             {
