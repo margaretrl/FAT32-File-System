@@ -1,4 +1,7 @@
 #include "fat32.h"
+#include "functions.h"
+
+
 
 
 void printFileSystemInfo(BootSectorData bs) {
@@ -37,5 +40,15 @@ void lsfunction(struct DirectoryEntry dir[])
             printf("%s\n", word);
         }
         i++;
+    }
+}
+
+void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *ptr_file, BootSectorData bs)
+{
+    fseek(ptr_file, LBAToOffset(dir[counter].DIR_FirstClusterLow, bs), SEEK_SET);
+    int i = 0;
+    for (i = 0; i < 16; i++)
+    {
+        fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
     }
 }

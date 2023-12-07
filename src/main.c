@@ -37,12 +37,7 @@ int open_file = 0;
 
 //Professor's code to check the LBAToOffset.
 
-int LBAToOffset(int sector, BootSectorData bs)
-{
-    return ((sector - 2) * bs.BPB_BytesPerSec) +
-           (bs.BPB_BytesPerSec * bs.BPB_RsvdSecCnt) +
-           (bs.BPB_NumFATs * bs.BPB_FATSz32 * bs.BPB_BytesPerSec);
-}
+
 
 //Professor's code to compare the filename.
 //Compares filename like bar.txt with BAR    TXT
@@ -348,41 +343,31 @@ int main(int argc, char *argv[])
                 lsfunction(dir);
                 continue;
             }
-
-                //Implementing cd function.
-                //Supports absolute and relative path.
-                //Changes the directory as directed.
             else if (strcmp("cd", token[0]) == 0)
             {
+                // Change Directory Command
+                // Set find bool originally to false
                 int find = 0;
                 if (token[1] == NULL)
                 {
+                    // No directory entered
                     printf("Error: Please enter the name of the directory.\n");
                 }
                 else
                 {
                     int counter = 0;
-                    //Using strcmp to check if there is "." or "..".
                     if (!strcmp(token[1], "..") || !strcmp(token[1], "."))
                     {
+                        // Directory is ".." or "."
                         while (counter < 16)
                         {
-                            //Compare function didn't work for "." and "..",
-                            //so using strstr to compare.
                             if (strstr(dir[counter].DIR_Name, token[1]) != NULL)
                             {
-                                //We need to set the cluster 20 2, if our parent
-                                //and roor directory are same.
                                 if (dir[counter].DIR_FirstClusterLow == 0)
                                 {
                                     dir[counter].DIR_FirstClusterLow = 2;
                                 }
-                                fseek(ptr_file, LBAToOffset(dir[counter].DIR_FirstClusterLow, bs), SEEK_SET);
-                                int i = 0;
-                                for (i = 0; i < 16; i++)
-                                {
-                                    fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
-                                }
+                                ReadDirEntries(dir, counter, ptr_file, bs);
                                 break;
                             }
                             counter++;
@@ -390,22 +375,18 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        //Using compare function to compare the file name
-                        // and implemented cd.
+                        // Directory entered is not ".." or "."
                         while (counter < 16)
                         {
                             char word[100];
+                            // Clear out word
                             memset(word, 0, sizeof(word));
                             strncpy(word, token[1], strlen(token[1]));
 
                             if (dir[counter].DIR_Attr != 0x20 && compare(dir[counter].DIR_Name, word))
                             {
-                                fseek(ptr_file, LBAToOffset(dir[counter].DIR_FirstClusterLow, bs), SEEK_SET);
-                                int i = 0;
-                                for (i = 0; i < 16; i++)
-                                {
-                                    fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
-                                }
+                                // Directory is found
+                                ReadDirEntries(dir, counter, ptr_file, bs);
                                 find = 1;
                                 break;
                             }
@@ -413,16 +394,13 @@ int main(int argc, char *argv[])
                         }
                         if (find == 0)
                         {
-
+                            // Directory entered does not exist
                             printf("Error: No such file or directory.\n");
                         }
                     }
                 }
                 continue;
             }
-
-                //Get functions reads all the contents from the files in
-                //fat32 image system and write that files into our local directory.
             else if (strcmp("get", token[0]) == 0)
             {
                 if (token[1] == NULL)
