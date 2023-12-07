@@ -13,7 +13,7 @@ BINDIR = bin
 all: $(BINDIR)/$(TARGET)
 
 $(BINDIR)/$(TARGET): $(OBJ)
-	mkdir -p $(BINDIR)
+	mkdir $(BINDIR)
 	$(CC) $(CFLAGS) $(OBJ) -o $@
 
 %.o: %.c
@@ -21,5 +21,6 @@ $(BINDIR)/$(TARGET): $(OBJ)
 
 clean:
 	rm -f src/*.o $(BINDIR)/$(TARGET)
+	rm -r $(BINDIR)
 
 .PHONY: all clean
