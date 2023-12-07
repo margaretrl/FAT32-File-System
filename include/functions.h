@@ -3,7 +3,7 @@
 
 #include "fat32.h"
 #include <ctype.h>
-#define MAX_SIZE_FILE 16
+#define MAX_FILE_SIZE 16
 
 
 int LBAToOffset(int sector, BootSectorData bs);

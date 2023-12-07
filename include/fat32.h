@@ -12,28 +12,27 @@
 // #define MAX_FILENAME_LENGTH 255
 // #define DELETED_ENTRY 0xE5
 // #define EMPTY_ENTRY 0x00
-#define SECTOR_SIZE 512
+//#define SECTOR_SIZE 512
 #define DIR_ENTRY_SIZE 32
-#define MAX_FILENAME_LENGTH 255
+#define MAX_FILENAME_LENGTH 12
 
 
 typedef struct {
-    char BS_OEMName[8];
-    int16_t BPB_BytesPerSec;
-    int8_t BPB_SecPerClus;
-    int16_t BPB_RsvdSecCnt;
-    int8_t BPB_NumFATs;
-    int16_t BPB_RootEntCnt;
-    char BS_VolLab[11];
-    int32_t BPB_FATSz32;
-    int32_t BPB_RootClus;
-    int32_t RootDirSectors;
-    int32_t FirstDataSector;
-    int32_t FirstSectorofCluster;
-    int32_t root_address;
-    //NEW MARGARET
-    int32_t TotalSectors;
-    long file_size;
+    //char BS_OEMName[8];
+    int16_t bytesPerSector;
+    int8_t sectorsPerCluster;
+    int16_t reservedSectorCnt;
+    int8_t FATnum;
+    //int16_t rootEntCnt;
+    //char volLabel[11];
+    int32_t FATSize32;
+    int32_t rootClusterNum;
+    //int32_t rootDirSectors;
+    //int32_t firstDataSector;
+    //int32_t firstClusterSector;
+    int32_t rootAddress;
+    int32_t totalSectors;
+    long fileSize;
 } BootSectorData;
 
 struct __attribute__((__packed__)) DirectoryEntry
@@ -48,10 +47,11 @@ struct __attribute__((__packed__)) DirectoryEntry
 };
 
 typedef struct {
-    char filename[FILENAME_MAX]; // Assuming FILENAME_MAX is defined
+    char filename[FILENAME_MAX]; // WHY DOES THIS WORK IF FILENAME_MAX ISNT DEFINED!!?
+    //Should it just be MAX_FILENAME_LENGTH?
     char mode[3]; // Store "-r", "-w", "-rw", or "-wr"
     int offset; // Current offset in the file
-    // Add other necessary fields, like cluster number, directory entry info, etc.
+    // Maybe add other necessary fields, like cluster number, directory entry info, etc.
 } OpenFile;
 
 

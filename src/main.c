@@ -8,16 +8,17 @@
 #include "functions.h"
 
 #define WHITESPACE " \t\n"
-#define MAX_COMMAND_SIZE 255 // The maximum command-line size
-#define MAX_NUM_ARGUMENTS 5 // Mav shell only supports five arguments
-#define MAX_SIZE_FILE 16
-#define SECTOR_SIZE 512
-#define DIR_ENTRY_SIZE 32
-#define MAX_FILENAME_LENGTH 255
+#define MAX_FILENAME_LENGTH 12 // Given max filename length
+#define MAX_CMD_SIZE 255 // The maximum command-line size
+#define MAX_ARG_NUM 5 // Assumption based on implemented cmds
+#define MAX_FILE_SIZE 16
+//#define SECTOR_SIZE 512
+//#define DIR_ENTRY_SIZE 32
 
-int32_t RootDirSectors = 0;
-int32_t FirstDataSector = 0;
-int32_t FirstSectorofCluster = 0;
+
+// int32_t rootDirSectors = 0;
+// int32_t firstDataSector = 0;
+// int32_t firstClusterSector = 0;
 
 #define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
 
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
     struct DirectoryEntry dir[16];
     // Initialize boot sector data struct
     BootSectorData bs;
-    char *cmd_str = (char *)malloc(MAX_COMMAND_SIZE);
+    char *commands = (char *)malloc(MAX_CMD_SIZE);
     if (argc != 2) {
         // Error in usage
         printf("Usage: ./filesys [FAT32 ISO]\n");
@@ -47,38 +48,38 @@ int main(int argc, char *argv[])
     {
         //Read in from the file
         fseek(ptr_file, 11, SEEK_SET);
-        fread(&bs.BPB_BytesPerSec, 2, 1, ptr_file);
+        fread(&bs.bytesPerSector, 2, 1, ptr_file);
 
         fseek(ptr_file, 13, SEEK_SET);
-        fread(&bs.BPB_SecPerClus, 1, 1, ptr_file);
+        fread(&bs.sectorsPerCluster, 1, 1, ptr_file);
 
         fseek(ptr_file, 14, SEEK_SET);
-        fread(&bs.BPB_RsvdSecCnt, 1, 2, ptr_file);
+        fread(&bs.reservedSectorCnt, 1, 2, ptr_file);
 
         fseek(ptr_file, 16, SEEK_SET);
-        fread(&bs.BPB_NumFATs, 1, 1, ptr_file);
+        fread(&bs.FATnum, 1, 1, ptr_file);
 
         fseek(ptr_file, 36, SEEK_SET);
-        fread(&bs.BPB_FATSz32, 1, 4, ptr_file);
+        fread(&bs.FATSize32, 1, 4, ptr_file);
 
-        bs.root_address = (bs.BPB_BytesPerSec * bs.BPB_RsvdSecCnt) +
-                       (bs.BPB_NumFATs * bs.BPB_FATSz32 * bs.BPB_BytesPerSec);
+        bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
+                       (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 
-        fseek(ptr_file, bs.root_address, SEEK_SET);
+        fseek(ptr_file, bs.rootAddress, SEEK_SET);
 
         //NEW CODE MARGARET
         // Saving curr pos of file ptr cus idk
         long current_position = ftell(ptr_file); 
 
         fseek(ptr_file, 44, SEEK_SET);
-        fread(&bs.BPB_RootClus, 4, 1, ptr_file);
+        fread(&bs.rootClusterNum, 4, 1, ptr_file);
 
         fseek(ptr_file, 32, SEEK_SET);
-        fread(&bs.TotalSectors, 4, 1, ptr_file);
+        fread(&bs.totalSectors, 4, 1, ptr_file);
 
         fseek(ptr_file, 0, SEEK_END);
-        long file_size = ftell(ptr_file);
-        bs.file_size = file_size;
+        long fileSize = ftell(ptr_file);
+        bs.fileSize = fileSize;
 
         fseek(ptr_file, current_position, SEEK_SET);
 
@@ -105,15 +106,15 @@ int main(int argc, char *argv[])
         int openFilesCount = 0; // Current number of open files
 
         // Read the command from the commandline.  The
-        // maximum command that will be read is MAX_COMMAND_SIZE
+        // maximum command that will be read is MAX_CMD_SIZE
         // This while command will wait here until the user
         // inputs something since fgets returns NULL when there
         // is no input
-        while (!fgets(cmd_str, MAX_COMMAND_SIZE, stdin))
+        while (!fgets(commands, MAX_CMD_SIZE, stdin))
             ;
 
         /* Parse input */
-        char *token[MAX_NUM_ARGUMENTS];
+        char *token[MAX_ARG_NUM];
 
         int token_count = 0;
 
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
         // parsed by strsep
         char *arg_ptr;
 
-        char *working_str = strdup(cmd_str);
+        char *working_str = strdup(commands);
 
         // we are going to move the working_str pointer so
         // keep track of its original value so we can deallocate
@@ -130,9 +131,9 @@ int main(int argc, char *argv[])
 
         // Tokenize the input stringswith whitespace used as the delimiter
         while (((arg_ptr = strsep(&working_str, WHITESPACE)) != NULL) &&
-               (token_count < MAX_NUM_ARGUMENTS))
+               (token_count < MAX_ARG_NUM))
         {
-            token[token_count] = strndup(arg_ptr, MAX_COMMAND_SIZE);
+            token[token_count] = strndup(arg_ptr, MAX_CMD_SIZE);
             if (strlen(token[token_count]) == 0)
             {
                 token[token_count] = NULL;
@@ -190,24 +191,24 @@ int main(int argc, char *argv[])
                 {
                     //Read in from the file
                     fseek(ptr_file, 11, SEEK_SET);
-                    fread(&bs.BPB_BytesPerSec, 2, 1, ptr_file);
+                    fread(&bs.bytesPerSector, 2, 1, ptr_file);
 
                     fseek(ptr_file, 13, SEEK_SET);
-                    fread(&bs.BPB_SecPerClus, 1, 1, ptr_file);
+                    fread(&bs.sectorsPerCluster, 1, 1, ptr_file);
 
                     fseek(ptr_file, 14, SEEK_SET);
-                    fread(&bs.BPB_RsvdSecCnt, 1, 2, ptr_file);
+                    fread(&bs.reservedSectorCnt, 1, 2, ptr_file);
 
                     fseek(ptr_file, 16, SEEK_SET);
-                    fread(&bs.BPB_NumFATs, 1, 1, ptr_file);
+                    fread(&bs.FATnum, 1, 1, ptr_file);
 
                     fseek(ptr_file, 36, SEEK_SET);
-                    fread(&bs.BPB_FATSz32, 1, 4, ptr_file);
+                    fread(&bs.FATSize32, 1, 4, ptr_file);
 
-                    bs.root_address = (bs.BPB_BytesPerSec * bs.BPB_RsvdSecCnt) +
-                                   (bs.BPB_NumFATs * bs.BPB_FATSz32 * bs.BPB_BytesPerSec);
+                    bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
+                                   (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 
-                    fseek(ptr_file, bs.root_address, SEEK_SET);
+                    fseek(ptr_file, bs.rootAddress, SEEK_SET);
                     int i = 0;
                     for (i = 0; i < 16; i++)
                     {

@@ -9,14 +9,14 @@ OpenFile openFiles[MAX_OPEN_FILES];
 
 
 void printFileSystemInfo(BootSectorData bs) {
-    printf("Bytes per Sector: %d\n", bs.BPB_BytesPerSec);
-    printf("Sectors per Cluster: %d\n", bs.BPB_SecPerClus);
-    printf("Total clusters in Data Region: %d\n", (bs.TotalSectors - (bs.BPB_RsvdSecCnt + (bs.BPB_NumFATs * bs.BPB_FATSz32))/ bs.BPB_SecPerClus));
-    printf("# of entries in one FAT: %f\n", ((bs.BPB_FATSz32 * bs.BPB_BytesPerSec) / 4.));
-    printf("Size of Image (bytes): %ld\n",bs.file_size);
-    printf("Root Cluster: %d\n", bs.BPB_RootClus);
-    printf("First Data Sector: %d\n",bs.BPB_RsvdSecCnt + (bs.BPB_NumFATs * bs.BPB_FATSz32));
-    printf("Total Sectors: %d\n",bs.TotalSectors);
+    printf("Bytes per Sector: %d\n", bs.bytesPerSector);
+    printf("Sectors per Cluster: %d\n", bs.sectorsPerCluster);
+    printf("Total clusters in Data Region: %d\n", (bs.totalSectors - (bs.reservedSectorCnt + (bs.FATnum * bs.FATSize32))/ bs.sectorsPerCluster));
+    printf("# of entries in one FAT: %f\n", ((bs.FATSize32 * bs.bytesPerSector) / 4.));
+    printf("Size of Image (bytes): %ld\n",bs.fileSize);
+    printf("Root Cluster: %d\n", bs.rootClusterNum);
+    printf("First Data Sector: %d\n",bs.reservedSectorCnt + (bs.FATnum * bs.FATSize32));
+    printf("Total Sectors: %d\n",bs.totalSectors);
 }
 
 void lsfunction(struct DirectoryEntry dir[])

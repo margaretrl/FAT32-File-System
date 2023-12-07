@@ -3,9 +3,9 @@
 
 int LBAToOffset(int sector, BootSectorData bs)
 {
-    return ((sector - 2) * bs.BPB_BytesPerSec) +
-           (bs.BPB_BytesPerSec * bs.BPB_RsvdSecCnt) +
-           (bs.BPB_NumFATs * bs.BPB_FATSz32 * bs.BPB_BytesPerSec);
+    return ((sector - 2) * bs.bytesPerSector) +
+           (bs.bytesPerSector * bs.reservedSectorCnt) +
+           (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 }
 
 int compare(char IMG_Name[], char input[])
@@ -55,7 +55,7 @@ int compare(char IMG_Name[], char input[])
 int match(struct DirectoryEntry dir[], char token[])
 {
     int index = 0;
-    while (index < MAX_SIZE_FILE)
+    while (index < MAX_FILE_SIZE)
     {
         if ((dir[index].DIR_Name[0] != 0xffffffe5) &&
             (compare(dir[index].DIR_Name, token)) &&
