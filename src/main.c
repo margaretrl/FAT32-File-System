@@ -1,6 +1,3 @@
-//#define _GNU_SOURCE
-
-//Require header files
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,123 +7,41 @@
 #include "fat32.h"
 #include "functions.h"
 
-
 #define WHITESPACE " \t\n"
-
 #define MAX_COMMAND_SIZE 255 // The maximum command-line size
-
 #define MAX_NUM_ARGUMENTS 5 // Mav shell only supports five arguments
-
 #define MAX_SIZE_FILE 16
 #define SECTOR_SIZE 512
 #define DIR_ENTRY_SIZE 32
 #define MAX_FILENAME_LENGTH 255
-/* struct declaration for Directory*/
 
 int32_t RootDirSectors = 0;
 int32_t FirstDataSector = 0;
 int32_t FirstSectorofCluster = 0;
 
-
-
-//These section holds the information for reserved section
-
-
-//Checks if the file is open or not.
 int open_file = 0;
-
-//Professor's code to check the LBAToOffset.
-
-
-
-//Professor's code to compare the filename.
-//Compares filename like bar.txt with BAR    TXT
-int compare(char IMG_Name[], char input[])
-{
-    char expanded_name[12];
-    memset(expanded_name, ' ', 12);
-
-    char temp[12];
-
-    strcpy(temp, input);
-
-    char *token = strtok(temp, ".");
-
-    if (token == NULL)
-    {
-        strncpy(expanded_name, "..", strlen(".."));
-    }
-    else
-    {
-        strncpy(expanded_name, token, strlen(token));
-    }
-
-    token = strtok(NULL, ".");
-
-    if (token)
-    {
-        strncpy((char *)(expanded_name + 8), token, strlen(token));
-    }
-
-    expanded_name[11] = '\0';
-
-    int i;
-    for (i = 0; i < 11; i++)
-    {
-        expanded_name[i] = toupper(expanded_name[i]);
-    }
-
-
-    if (strncmp(expanded_name, IMG_Name, 11) == 0)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-//This function checks if the file directory exists.
-//If the file exits, it returns back its index.
-//Takes in struct dir and file directory as input.
-int match(struct DirectoryEntry dir[], char token[])
-{
-    int index = 0;
-    while (index < MAX_SIZE_FILE)
-    {
-        if ((dir[index].DIR_Name[0] != 0xffffffe5) &&
-            (compare(dir[index].DIR_Name, token)) &&
-            (dir[index].DIR_Attr == 0x01 ||
-             dir[index].DIR_Attr == 0x10 ||
-             dir[index].DIR_Attr == 0x20 ||
-             dir[index].DIR_Name[0] == 0x2e))
-        {
-            return index;
-        }
-        index++;
-    }
-    return -2;
-}
-
 int main(int argc, char *argv[])
 {
-    //A struct to hold all the attributes of the directory.
+    //Initialize Directory struct
     struct DirectoryEntry dir[16];
+    // Initialize boot sector data struct
     BootSectorData bs;
     char *cmd_str = (char *)malloc(MAX_COMMAND_SIZE);
     if (argc != 2) {
+        // Error in usage
         printf("Usage: ./filesys [FAT32 ISO]\n");
         return 1;
     }
 
     FILE *ptr_file = fopen(argv[1], "rb");
     if (!ptr_file) {
+        // Image file doesn't exist
         printf("Error: File does not exist.\n");
         return 1;
     }
     else
     {
         //Read in from the file
-
         fseek(ptr_file, 11, SEEK_SET);
         fread(&bs.BPB_BytesPerSec, 2, 1, ptr_file);
 
@@ -300,7 +215,6 @@ int main(int argc, char *argv[])
         {
             printf("Error: File system must be opened first.\n");
         }
-
         else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
                   (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
                   (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) &&
@@ -325,21 +239,17 @@ int main(int argc, char *argv[])
                 if (index_counter == -2)
                 {
                     printf("Error: File not found.\n");
-                }
-                else
-                {
+                } else {
                     printf("Attribute\tSize\tStarting Cluster Number\n");
                     printf("%d\t\t%d\t%d\n\n", dir[index_counter].DIR_Attr,
                            dir[index_counter].DIR_FileSize, dir[index_counter].DIR_FirstClusterLow);
                 }
                 continue;
             }
-
                 //Implementing ls function
                 //List downs the files from a current directory when fat32 image file is open.
             else if (strcmp("ls", token[0]) == 0)
             {
-
                 lsfunction(dir);
                 continue;
             }
