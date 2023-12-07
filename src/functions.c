@@ -70,3 +70,39 @@ int match(struct DirectoryEntry dir[], char token[])
     }
     return -2;
 }
+typedef struct {
+    char filename[256]; // or another suitable length
+    char mode[10];      // e.g., "r", "w"
+    int offset;
+    int fileSize;
+} FileRecord;
+
+
+void setFileOffset(FileRecord openFiles[], const char *filename, int newOffset)
+{
+    int fileFound = 0;
+
+    for (int i = 0; i < 10; i++) // assuming max 10 open files
+    {
+        if (strcmp(openFiles[i].filename, filename) == 0 && openFiles[i].filename[0] != '\0')
+        {
+            fileFound = 1;
+
+            // Check if the new offset is larger than the file size
+            if (newOffset > openFiles[i].fileSize)
+            {
+                printf("Error: Offset is larger than the file size.\n");
+                return;
+            }
+
+            openFiles[i].offset = newOffset;
+            printf("Offset of file '%s' set to %d.\n", filename, newOffset);
+            return;
+        }
+    }
+
+    if (!fileFound)
+    {
+        printf("Error: File '%s' is not opened or does not exist.\n", filename);
+    }
+}

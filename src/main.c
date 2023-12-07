@@ -387,11 +387,17 @@ int main(int argc, char *argv[])
                 lsoffunction(openFiles);
 
             }
-            else if (strcmp("lseek", token[0]) == 0)
-            {
-                printf("this is gonna be the lseek function\n");
-
+            else if (strcmp("lseek", token[0]) == 0) {
+                 if (token[1] == NULL || token[2] == NULL) {
+                     printf("Usage: lseek [FILENAME] [OFFSET]\n");
+                }
+            else {
+                char* filename = token[1];
+                int newOffset = atoi(token[2]);
+                setFileOffset(openFiles, filename, newOffset);
+             }
             }
+
             else if (strcmp("read", token[0]) == 0)
             {
                 if (token[1] == NULL || token[2] == NULL )
