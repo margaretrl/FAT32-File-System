@@ -31,6 +31,9 @@ typedef struct {
     int32_t FirstDataSector;
     int32_t FirstSectorofCluster;
     int32_t root_address;
+    //NEW MARGARET
+    int32_t TotalSectors;
+    long file_size;
 } BootSectorData;
 
 struct __attribute__((__packed__)) DirectoryEntry

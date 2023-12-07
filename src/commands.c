@@ -7,18 +7,26 @@
 void printFileSystemInfo(BootSectorData bs) {
     printf("Bytes per Sector: %d\n", bs.BPB_BytesPerSec);
     printf("Sectors per Cluster: %d\n", bs.BPB_SecPerClus);
+    printf("Total clusters in Data Region: %d\n", (bs.TotalSectors - (bs.BPB_RsvdSecCnt + (bs.BPB_NumFATs * bs.BPB_FATSz32))/ bs.BPB_SecPerClus));
+    printf("# of entries in one FAT: %f\n", ((bs.BPB_FATSz32 * bs.BPB_BytesPerSec) / 4.));
+    printf("Size of Image (bytes): %ld\n",bs.file_size);
+    printf("Root Cluster: %d\n", bs.BPB_RootClus);
+    printf("First Data Sector: %d\n",bs.BPB_RsvdSecCnt + (bs.BPB_NumFATs * bs.BPB_FATSz32));
+    printf("Total Sectors: %d\n",bs.TotalSectors);
+    
+    //printf("\n");
 
-    printf("BPB_RsvdSecCnt : %d\n", bs.BPB_RsvdSecCnt);
-    printf("BPB_RsvdSecCnt : %x\n", bs.BPB_RsvdSecCnt);
-    printf("\n");
+    // printf("BPB_RsvdSecCnt : %d\n", bs.BPB_RsvdSecCnt);
+    // printf("BPB_RsvdSecCnt : %x\n", bs.BPB_RsvdSecCnt);
+    // printf("BPB_NumFATs : %d\n", bs.BPB_NumFATs);
+    // printf("BPB_NumFATs : %x\n", bs.BPB_NumFATs);
+    // printf("\n");
 
-    printf("BPB_NumFATs : %d\n", bs.BPB_NumFATs);
-    printf("BPB_NumFATs : %x\n", bs.BPB_NumFATs);
-    printf("\n");
+    // printf("BPB_FATSz32 : %d\n", bs.BPB_FATSz32);
+    // printf("BPB_FATSz32 : %x\n", bs.BPB_FATSz32);
+    // printf("\n");
 
-    printf("BPB_FATSz32 : %d\n", bs.BPB_FATSz32);
-    printf("BPB_FATSz32 : %x\n", bs.BPB_FATSz32);
-    printf("\n");
+    // printf("\n"); 
 }
 
 void lsfunction(struct DirectoryEntry dir[])

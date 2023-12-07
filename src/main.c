@@ -61,6 +61,23 @@ int main(int argc, char *argv[])
                        (bs.BPB_NumFATs * bs.BPB_FATSz32 * bs.BPB_BytesPerSec);
 
         fseek(ptr_file, bs.root_address, SEEK_SET);
+
+        //NEW CODE MARGARET
+        // Saving curr pos of file ptr cus idk
+        long current_position = ftell(ptr_file); 
+
+        fseek(ptr_file, 44, SEEK_SET);
+        fread(&bs.BPB_RootClus, 4, 1, ptr_file);
+
+        fseek(ptr_file, 32, SEEK_SET);
+        fread(&bs.TotalSectors, 4, 1, ptr_file);
+
+        fseek(ptr_file, 0, SEEK_END);
+        long file_size = ftell(ptr_file);
+        bs.file_size = file_size;
+
+        fseek(ptr_file, current_position, SEEK_SET);
+
         int i = 0;
         for (i = 0; i < 16; i++)
         {
