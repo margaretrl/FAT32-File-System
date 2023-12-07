@@ -21,8 +21,6 @@ typedef struct {
     //char BS_OEMName[8];
     int16_t bytesPerSector;
     int8_t sectorsPerCluster;
-    int16_t reservedSectorCnt;
-    int8_t FATnum;
     //int16_t rootEntCnt;
     //char volLabel[11];
     int32_t FATSize32;
@@ -30,6 +28,8 @@ typedef struct {
     //int32_t rootDirSectors;
     //int32_t firstDataSector;
     //int32_t firstClusterSector;
+    int16_t reservedSectorCnt;
+    int8_t FATnum;
     int32_t rootAddress;
     int32_t totalSectors;
     long fileSize;

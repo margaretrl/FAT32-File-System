@@ -7,7 +7,7 @@
 
 
 int LBAToOffset(int sector, BootSectorData bs);
-int compare(char IMG_Name[], char input[]);
+int compare(char imgName[], char input[]);
 int match(struct DirectoryEntry dir[], char token[]);
 
 

@@ -20,11 +20,11 @@
 // int32_t firstDataSector = 0;
 // int32_t firstClusterSector = 0;
 
-#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
+//#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
 
 
 
-int open_file = 0;
+int img_mounted = 0;
 int main(int argc, char *argv[])
 {
     //Initialize Directory struct
@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    FILE *ptr_file = fopen(argv[1], "rb");
-    if (!ptr_file) {
+    FILE *imageFile = fopen(argv[1], "rb");
+    if (!imageFile) {
         // Image file doesn't exist
         printf("Error: File does not exist.\n");
         return 1;
@@ -47,59 +47,68 @@ int main(int argc, char *argv[])
     else
     {
         //Read in from the file
-        fseek(ptr_file, 11, SEEK_SET);
-        fread(&bs.bytesPerSector, 2, 1, ptr_file);
+        fseek(imageFile, 11, SEEK_SET);
+        fread(&bs.bytesPerSector, 2, 1, imageFile);
 
-        fseek(ptr_file, 13, SEEK_SET);
-        fread(&bs.sectorsPerCluster, 1, 1, ptr_file);
+        fseek(imageFile, 13, SEEK_SET);
+        fread(&bs.sectorsPerCluster, 1, 1, imageFile);
 
-        fseek(ptr_file, 14, SEEK_SET);
-        fread(&bs.reservedSectorCnt, 1, 2, ptr_file);
+        fseek(imageFile, 14, SEEK_SET);
+        fread(&bs.reservedSectorCnt, 1, 2, imageFile);
 
-        fseek(ptr_file, 16, SEEK_SET);
-        fread(&bs.FATnum, 1, 1, ptr_file);
+        fseek(imageFile, 16, SEEK_SET);
+        fread(&bs.FATnum, 1, 1, imageFile);
 
-        fseek(ptr_file, 36, SEEK_SET);
-        fread(&bs.FATSize32, 1, 4, ptr_file);
+        fseek(imageFile, 36, SEEK_SET);
+        fread(&bs.FATSize32, 1, 4, imageFile);
 
         bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
                        (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 
-        fseek(ptr_file, bs.rootAddress, SEEK_SET);
+        fseek(imageFile, bs.rootAddress, SEEK_SET);
 
         // Saving curr pos of file ptr cus idk
-        long current_position = ftell(ptr_file); 
+        long current_position = ftell(imageFile); 
 
-        fseek(ptr_file, 44, SEEK_SET);
-        fread(&bs.rootClusterNum, 4, 1, ptr_file);
+        fseek(imageFile, 44, SEEK_SET);
+        fread(&bs.rootClusterNum, 4, 1, imageFile);
 
-        fseek(ptr_file, 32, SEEK_SET);
-        fread(&bs.totalSectors, 4, 1, ptr_file);
+        fseek(imageFile, 32, SEEK_SET);
+        fread(&bs.totalSectors, 4, 1, imageFile);
 
-        fseek(ptr_file, 0, SEEK_END);
-        long fileSize = ftell(ptr_file);
+        fseek(imageFile, 0, SEEK_END);
+        long fileSize = ftell(imageFile);
         bs.fileSize = fileSize;
 
-        fseek(ptr_file, current_position, SEEK_SET);
+        fseek(imageFile, current_position, SEEK_SET);
 
         for (int i = 0; i < 16; i++)
         {
-            fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
+            fread(&dir[i], sizeof(dir[i]), 1, imageFile);
         }
 
-        open_file = 1;
+        img_mounted = 1;
     }
 
     // part 2
     char currentPath[MAX_FILENAME_LENGTH] = "/"; // Root directory to start
     //char parameter[100];
+    OpenFile openFiles[MAX_OPEN_FILES];
+
+    // Initializing elements of openFiles
+    for (int i = 0; i < MAX_OPEN_FILES; i++) {
+        openFiles[i].filename[0] = '\0'; // Set the first character to null terminator
+        openFiles[i].mode[0] = '\0';     // Same for mode
+        openFiles[i].offset = 0;         // Initialize offset to 0
+    }
+
+    int openFilesCount = 0; // Current number of open files
     while (1)
     {
         // Print out the mfs prompt
         printf("[%s]%s> ", argv[1], currentPath);
 
-        OpenFile openFiles[MAX_OPEN_FILES];
-        int openFilesCount = 0; // Current number of open files
+
 
         // Read the command from the commandline.  The
         // maximum command that will be read is MAX_CMD_SIZE
@@ -146,33 +155,37 @@ int main(int argc, char *argv[])
             //opens the file
         else if (strcmp("open", token[0]) == 0)
         {
+            //printf("%d\n",openFilesCount);
 
             //Check if there is no file name
-            if (token[1] == NULL)
+            if (token[1] == NULL || token[2] == NULL)
             {
-                printf("Error: Please enter the name of file to open.\n");
+                printf("Error - Usage: open [FILENAME] [FLAGS]\n");
                 continue;
             }
             else
             {
-                int result = openFile("LONGFILE", "-r");
+                int result = openFile(token[1],"-r",openFilesCount,openFiles); //token[2] is hardcoded in atm!!
                 if (result == 0) { // Assuming 0 is the success code
                     // Check if the file is in the openFiles array
+                    openFilesCount++;
                     for (int i = 0; i < openFilesCount; i++) {
-                        if (strcmp(openFiles[i].filename, "example.txt") == 0) {
+                        //printf("%s\n",openFiles[i].filename);
+                        if (strcmp(openFiles[i].filename, token[1]) == 0) {
                             printf("File is successfully opened.\n");
-                            // Optionally, check other properties like mode, offset, etc.
+                            //openFilesCount++;
                             break;
                         }
                     }
+                    
                 } else {
                     printf("Failed to open file.\n");
                 }
 
                 /*
-                ptr_file = fopen(token[1], "r");
+                imageFile = fopen(token[1], "r");
                 //Check if the given file name exists
-                if (ptr_file == NULL)
+                if (imageFile == NULL)
                 {
                     printf("Error: File system image not found.\n");
                     continue;
@@ -186,29 +199,29 @@ int main(int argc, char *argv[])
                 else
                 {
                     //Read in from the file
-                    fseek(ptr_file, 11, SEEK_SET);
-                    fread(&bs.bytesPerSector, 2, 1, ptr_file);
+                    fseek(imageFile, 11, SEEK_SET);
+                    fread(&bs.bytesPerSector, 2, 1, imageFile);
 
-                    fseek(ptr_file, 13, SEEK_SET);
-                    fread(&bs.sectorsPerCluster, 1, 1, ptr_file);
+                    fseek(imageFile, 13, SEEK_SET);
+                    fread(&bs.sectorsPerCluster, 1, 1, imageFile);
 
-                    fseek(ptr_file, 14, SEEK_SET);
-                    fread(&bs.reservedSectorCnt, 1, 2, ptr_file);
+                    fseek(imageFile, 14, SEEK_SET);
+                    fread(&bs.reservedSectorCnt, 1, 2, imageFile);
 
-                    fseek(ptr_file, 16, SEEK_SET);
-                    fread(&bs.FATnum, 1, 1, ptr_file);
+                    fseek(imageFile, 16, SEEK_SET);
+                    fread(&bs.FATnum, 1, 1, imageFile);
 
-                    fseek(ptr_file, 36, SEEK_SET);
-                    fread(&bs.FATSize32, 1, 4, ptr_file);
+                    fseek(imageFile, 36, SEEK_SET);
+                    fread(&bs.FATSize32, 1, 4, imageFile);
 
                     bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
                                    (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 
-                    fseek(ptr_file, bs.rootAddress, SEEK_SET);
+                    fseek(imageFile, bs.rootAddress, SEEK_SET);
                     int i = 0;
                     for (i = 0; i < 16; i++)
                     {
-                        fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
+                        fread(&dir[i], sizeof(dir[i]), 1, imageFile);
                     }
 
                     printf("File successfully opened!!\n");
@@ -220,26 +233,55 @@ int main(int argc, char *argv[])
             //Closes the file that is open
         else if (strcmp("close", token[0]) == 0)
         {
-            if (open_file == 1)
-            {
-                fclose(ptr_file);
-                ptr_file = NULL;
-                printf("File successfully closed!!\n");
-                open_file = 0;
+            // if (open_file == 1)
+            // {
+            //     fclose(imageFile);
+            //     imageFile = NULL;
+            //     printf("File successfully closed!!\n");
+            //     open_file = 0;
+            // }
+            // else
+            // {
+            //     printf("Error: File system not open.\n");
+            // }
+            // continue;
+            
+            // Cmd use check
+            if(token[1] == NULL ){
+                printf("Error - Usage: close [FILENAME]\n");
+                continue;
             }
-            else
-            {
-                printf("Error: File system not open.\n");
+
+            bool closed = false;
+            // Check if file is open
+            for (int i = 0; i < openFilesCount; i++) {
+                if (strcmp(openFiles[i].filename, token[1]) == 0) {
+                    // Shift all elements after the found element one position back
+                    for (int j = i; j < openFilesCount - 1; j++) {
+                        openFiles[j] = openFiles[j + 1];
+                    }
+                    openFilesCount--; // Decrement the count of open files
+                    printf("File sucessfully closed\n");
+                    closed = true;
+                    break;
+                }
+
             }
-            continue;
+
+            // If file isnt open
+            if(!closed){
+                printf("Error: File is not open.\n");
+            }
+
         }
 
             //Exits from the mfs shell
         else if (strcmp("exit", token[0]) == 0)
         {
-            if (open_file == 1)
+            if (img_mounted == 1)
             {
-                fclose(ptr_file);
+                fclose(imageFile);
+                imageFile = NULL;
             }
             break;
         }
@@ -247,15 +289,18 @@ int main(int argc, char *argv[])
             //info, stat, ls, get, cd, read works only when the fat32 image is open.
         else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
                   (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) &&
-                 (open_file == 0))
+                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0))
+                  && (img_mounted == 0)
+                  )
         {
-            printf("Error: File system must be opened first.\n");
+            //printf("Error: File system must be opened first.\n");
+            printf("Error: Image must be mounted first.\n");
         }
         else if (((strcmp("info", token[0]) == 0) || (strcmp("stat", token[0]) == 0) ||
                   (strcmp("ls", token[0]) == 0) || (strcmp("cd", token[0]) == 0) ||
-                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) &&
-                 (open_file == 1))
+                  (strcmp("get", token[0]) == 0) || (strcmp("read", token[0]) == 0)) 
+                  &&(img_mounted == 1)
+                  )
         {
             //Prints out all the information abou the fat32 image file.
             if (strcmp("info", token[0]) == 0)
@@ -314,7 +359,7 @@ int main(int argc, char *argv[])
                                 {
                                     dir[counter].firstClusterLow = 2;
                                 }
-                                ReadDirEntries(dir, counter, ptr_file, bs);
+                                ReadDirEntries(dir, counter, imageFile, bs);
                                 break;
                             }
                             counter++;
@@ -333,7 +378,7 @@ int main(int argc, char *argv[])
                             if (dir[counter].attributes != 0x20 && compare(dir[counter].name, word))
                             {
                                 // Directory is found
-                                ReadDirEntries(dir, counter, ptr_file, bs);
+                                ReadDirEntries(dir, counter, imageFile, bs);
                                 find = 1;
                                 break;
                             }
@@ -348,35 +393,6 @@ int main(int argc, char *argv[])
                 }
                 continue;
             }
-            else if (strcmp("get", token[0]) == 0)
-            {
-                if (token[1] == NULL)
-                {
-                    printf("Please enter the name of the file in the ");
-                    printf("following format: get <filename>.\n");
-                }
-                else
-                {
-                    int index_counter = match(dir, token[1]);
-                    if (index_counter == -2)
-                    {
-                        printf("Error: File not found.\n");
-                    }
-                    else
-                    {
-                        int cluster = dir[index_counter].firstClusterLow;
-                        int size = dir[index_counter].fileSize;
-                        FILE *file_ptr = fopen(token[1], "w");
-                        fseek(ptr_file, LBAToOffset(cluster, bs), SEEK_SET);
-                        char *temp_ptr = malloc(size);
-                        fread(temp_ptr, size, 1, ptr_file);
-                        fwrite(temp_ptr, size, 1, file_ptr);
-                        free(temp_ptr);
-                        fclose(file_ptr);
-                    }
-                }
-            }
-
             else if (strcmp("read", token[0]) == 0)
             {
                 if (token[1] == NULL || token[2] == NULL )
@@ -395,15 +411,15 @@ int main(int argc, char *argv[])
                     else
                     {
                         int position = 0;
-                        int NumOfBytes= atoi(token[2]);
+                        int bytesNum= atoi(token[2]);
 
                         int cluster = dir[index_counter].firstClusterLow;
 
-                        fseek(ptr_file, position + LBAToOffset(cluster, bs), SEEK_SET);
+                        fseek(imageFile, position + LBAToOffset(cluster, bs), SEEK_SET);
 
-                        char *temp_str = malloc(NumOfBytes);
+                        char *temp_str = malloc(bytesNum);
 
-                        fread(temp_str,NumOfBytes,1,ptr_file);
+                        fread(temp_str,bytesNum,1,imageFile);
 
                         printf("%s\n",temp_str);
 

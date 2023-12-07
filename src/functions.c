@@ -8,7 +8,7 @@ int LBAToOffset(int sector, BootSectorData bs)
            (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
 }
 
-int compare(char IMG_Name[], char input[])
+int compare(char imgName[], char input[])
 {
     char expanded_name[12];
     memset(expanded_name, ' ', 12);
@@ -44,7 +44,7 @@ int compare(char IMG_Name[], char input[])
     }
 
 
-    if (strncmp(expanded_name, IMG_Name, 11) == 0)
+    if (strncmp(expanded_name, imgName, 11) == 0)
     {
         return 1;
     }

@@ -3,8 +3,7 @@
 #define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
 
 
-int openFilesCount = 0; // Current number of open files
-OpenFile openFiles[MAX_OPEN_FILES];
+
 
 
 
@@ -41,19 +40,20 @@ void lsfunction(struct DirectoryEntry dir[])
     }
 }
 
-void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *ptr_file, BootSectorData bs)
+void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, BootSectorData bs)
 {
-    fseek(ptr_file, LBAToOffset(dir[counter].firstClusterLow, bs), SEEK_SET);
+    fseek(imageFile, LBAToOffset(dir[counter].firstClusterLow, bs), SEEK_SET);
     int i = 0;
     for (i = 0; i < 16; i++)
     {
-        fread(&dir[i], sizeof(dir[i]), 1, ptr_file);
+        fread(&dir[i], sizeof(dir[i]), 1, imageFile);
     }
 }
 
-int openFile(const char* filename, const char* mode) {
+int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]) {
     // Check if the file is already open
     for (int i = 0; i < openFilesCount; i++) {
+        //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
             printf("Error: File is already opened.\n");
             return -1;
@@ -68,12 +68,16 @@ int openFile(const char* filename, const char* mode) {
     }
 
     if (openFilesCount < MAX_OPEN_FILES) {
-        strcpy(openFiles[openFilesCount].filename, filename);
-        strcpy(openFiles[openFilesCount].mode, mode);
+        strncpy(openFiles[openFilesCount].filename, filename, FILENAME_MAX - 1);
+        openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
+
+        strncpy(openFiles[openFilesCount].mode, mode, 2);
+        openFiles[openFilesCount].mode[2] = '\0';
+
         openFiles[openFilesCount].offset = 0;
         // Set other necessary file info, like cluster number, etc.
 
-        openFilesCount++;
+        //openFilesCount++;
         return 0; // Success
     } else {
         printf("Error: Too many open files.\n");
