@@ -78,7 +78,7 @@ typedef struct {
 } FileRecord;
 
 
-void setFileOffset(FileRecord openFiles[], const char *filename, int newOffset)
+void setFileOffset(OpenFile openFiles[], const char *filename, int newOffset)
 {
     int fileFound = 0;
 
