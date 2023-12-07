@@ -49,7 +49,7 @@ struct __attribute__((__packed__)) DirectoryEntry
 typedef struct {
     char filename[FILENAME_MAX]; // WHY DOES THIS WORK IF FILENAME_MAX ISNT DEFINED!!?
     //Should it just be MAX_FILENAME_LENGTH?
-    char mode[3]; // Store "-r", "-w", "-rw", or "-wr"
+    char mode[4]; // Store "-r", "-w", "-rw", or "-wr"
     int offset; // Current offset in the file
     // Maybe add other necessary fields, like cluster number, directory entry info, etc.
 } OpenFile;

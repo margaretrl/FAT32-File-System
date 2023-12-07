@@ -52,6 +52,7 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
 
 int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]) {
     // Check if the file is already open
+    // !!! Need to add checking if the file exists
     for (int i = 0; i < openFilesCount; i++) {
         //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
@@ -71,8 +72,8 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
         strncpy(openFiles[openFilesCount].filename, filename, FILENAME_MAX - 1);
         openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
 
-        strncpy(openFiles[openFilesCount].mode, mode, 2);
-        openFiles[openFilesCount].mode[2] = '\0';
+        strncpy(openFiles[openFilesCount].mode, mode, 3);
+        openFiles[openFilesCount].mode[3] = '\0';
 
         openFiles[openFilesCount].offset = 0;
         // Set other necessary file info, like cluster number, etc.
@@ -93,8 +94,35 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
                 for (int j = i; j < openFilesCount - 1; j++) {
                     openFiles[j] = openFiles[j + 1];
                 }
+                openFilesCount--;
+                // may be a better way to do this
+                openFiles[openFilesCount].filename[0] = '\0';
+                openFiles[openFilesCount].mode[0] = '\0';
+                openFiles[openFilesCount].offset = '\0';
+
+
                 return 0;
             }
         }
         return -1;
+}
+
+void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])
+{
+    // !!! still neeed to do formatting stuff for it
+    if (openFiles[0].filename[0] == '\0')
+    {
+        // I feel like this may be wrong condition
+        printf("No files currently open.\n");
+    }
+    else
+    {
+        int i=0;
+        while((i < 10) && (openFiles[i].filename[0] != '\0'))
+        {
+            printf("%d    %s    %s    %d    \n", i, openFiles[i].filename, openFiles[i].mode,openFiles[i].offset );
+            i++;
+        }
+        //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
+    }
 }

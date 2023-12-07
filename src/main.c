@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    int result = openFile(token[1],"-r",openFilesCount,openFiles); //token[2] is hardcoded in atm!!
+                    int result = openFile(token[1],token[2],openFilesCount,openFiles); //token[2] is hardcoded in atm!!
                     if (result == 0) { // Assuming 0 is the success code
                         // Check if the file is in the openFiles array
                         openFilesCount++;
@@ -375,6 +375,7 @@ int main(int argc, char *argv[])
                     if(closeFile(token[1], openFilesCount, openFiles) == 0){
                         printf("File sucessfully closed\n");
                         openFilesCount--; // Decrement the count of open files
+                        // !!! i dont think its updateing the array openFiles tho and we gotta like check if its in the list of opened files
                     }
                     else{
                         printf("Error: File is not open.\n");
@@ -383,22 +384,8 @@ int main(int argc, char *argv[])
             }
             else if (strcmp("lsof", token[0]) == 0)
             {
-                if (openFiles[0].filename[0] == '\0')
-                {
-                    // I feel like this may be wrong condition
-                    printf("No files currently open.\n");
-                }
-                else
-                {
-                    int i=0;
-                    while((i < 10) && (openFiles[i].filename[0] != '\0'))
-                    {
-                        printf("%d    %s    %s    %d    \n", i, openFiles[i].filename, openFiles[i].mode,openFiles[i].offset );
-                        i++;
-                    }
-                    //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
+                lsoffunction(openFiles);
 
-                }
             }
             else if (strcmp("lseek", token[0]) == 0)
             {
