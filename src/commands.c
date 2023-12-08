@@ -56,7 +56,6 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     // Check if the file is already open
     // !!! Need to add checking if the file exists
     // !!! cd check path
-    printf("line 58\n");
     for (int i = 0; i < openFilesCount; i++) {
         //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
@@ -66,7 +65,6 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 
     // Validate the mode
-    printf("line 68\n");
 
     if (strcmp(mode, "-r") != 0 && strcmp(mode, "-w") != 0 &&
         strcmp(mode, "-rw") != 0 && strcmp(mode, "-wr") != 0) {
@@ -75,9 +73,7 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 
     if (openFilesCount < MAX_OPEN_FILES) {
-        printf("line 77\n");
         strncpy(openFiles[openFilesCount].filename, filename, MAX_FILENAME_LENGTH - 1);
-        printf("line 78\n");
 
         openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
 

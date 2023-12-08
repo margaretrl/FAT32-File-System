@@ -499,13 +499,13 @@ int main(int argc, char *argv[]) {
                 {
                     int index_counter= match(dir,token[1]);
 
-                    int opened = 1;
+                    int filepos = 1;
                     int i=0;
                     while(openFiles[i].filename[0] != '\0')
                     {
                         if (strcmp(token[1],openFiles[i].filename) == 0)
                         {
-                            opened = 0;
+                            filepos = i;
                         }
                         i++;
                     }
@@ -514,23 +514,31 @@ int main(int argc, char *argv[]) {
                         printf("Error: File not found \n");
 
                     }
-                    else if (opened == 0)
+                    else if (filepos != 1)
                     {
+                        if ((strcmp(openFiles[filepos].mode, "-r") == 0) || (strcmp(openFiles[filepos].mode, "-rw") == 0)
+                         || (strcmp(openFiles[filepos].mode, "-wr") == 0))
+                        {
+                            int position = 0;
+                            int bytesNum= atoi(token[2]);
 
-                        int position = 0;
-                        int bytesNum= atoi(token[2]);
+                            int cluster = dir[index_counter].firstClusterLow;
 
-                        int cluster = dir[index_counter].firstClusterLow;
+                            fseek(imageFile, position + LBAToOffset(cluster, bs), SEEK_SET);
 
-                        fseek(imageFile, position + LBAToOffset(cluster, bs), SEEK_SET);
+                            char *temp_str = malloc(bytesNum);
 
-                        char *temp_str = malloc(bytesNum);
+                            fread(temp_str,bytesNum,1,imageFile);
 
-                        fread(temp_str,bytesNum,1,imageFile);
+                            printf("%s\n",temp_str);
 
-                        printf("%s\n",temp_str);
+                            free(temp_str);
+                        }
+                        else
+                        {
+                            printf("File must have read permissions\n");
+                        }
 
-                        free(temp_str);
 
                     }
                     else
