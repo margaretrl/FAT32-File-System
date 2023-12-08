@@ -15,14 +15,10 @@
 
 /*
  * TODO
- * Are we allowed to exit when theres file open
  *  path for lsof only works when you cd into it
- * * Are we allowed to exit when theres file open
- * my read and open arent like stopping for some reason
  * Have to add filesize checker for lseek function
- * Can you only use lseek if you have write permissions
  *  check for read permissions before reading
- *
+ *  update offset during read
  *
  */
 
