@@ -20,9 +20,6 @@
  *  // maybe change printing for like if a file doesnt exist
  * Have to add filesize checker for lseek function
  *      add filesize to open file
- *  update offset during read
- *  if you put 200 for read and the filesize is 10, what happens
- *  print up to filesize in read
  */
 
 #include <stdio.h>
@@ -379,25 +376,30 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
-
-                    printf("about to print\n");
-
-                    int result = openFile(token[1],token[2],openFilesCount,openFiles,currentPath);
-                    if (result == 0) { // Assuming 0 is the success code
-                        // Check if the file is in the openFiles array
-                        openFilesCount++;
-                        for (int i = 0; i < openFilesCount; i++) {
-                            //printf("%s\n",openFiles[i].filename);
-                            if (strcmp(openFiles[i].filename, token[1]) == 0) {
-                                printf("File is successfully opened.\n");
-                                //openFilesCount++;
-                                break;
-                            }
-                        }
-
-                    } else {
-                        printf("Failed to open file.\n");
+                    if (match(dir, token[1]) == -2)
+                    {
+                        printf("File does not exist\n");
                     }
+                    else
+                    {
+                        int result = openFile(token[1],token[2],openFilesCount,openFiles,currentPath);
+                        if (result == 0) { // Assuming 0 is the success code
+                            // Check if the file is in the openFiles array
+                            openFilesCount++;
+                            for (int i = 0; i < openFilesCount; i++) {
+                                //printf("%s\n",openFiles[i].filename);
+                                if (strcmp(openFiles[i].filename, token[1]) == 0) {
+                                    printf("File is successfully opened.\n");
+                                    //openFilesCount++;
+                                    break;
+                                }
+                            }
+
+                        } else {
+                            printf("Failed to open file.\n");
+                        }
+                    }
+
                     /*
                     
                     imageFile = fopen(token[1], "r");
