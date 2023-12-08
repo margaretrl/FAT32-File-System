@@ -19,24 +19,6 @@
  *  // maybe change printing for like if a file doesnt exist
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-
-#include <string.h>
-#include <stdlib.h>
-
-
-
-#include <stdlib.h>
-#include <string.h>
-
-
-
-
-// Add other necessary includes and definitions here
-
 int img_mounted = 0;
 char img_mounted_name[50];
 
@@ -45,9 +27,10 @@ int main(int argc, char *argv[]) {
 
     //Initialize Directory struct
     struct DirectoryEntry dir[16];
+
     // Initialize boot sector data struct
     BootSectorData bs;
-    //char *commands = (char *)malloc(MAX_CMD_SIZE);
+
     if (argc != 2) {
         printf("Usage: ./filesys [FAT32 ISO]\n");
         return 1;
@@ -106,13 +89,13 @@ int main(int argc, char *argv[]) {
     }
 
 
-    char currentPath[MAX_CMD_SIZE] = "/"; // Adjust as needed
-    OpenFile openFiles[MAX_OPEN_FILES]; // Adjust as needed
+    char currentPath[MAX_CMD_SIZE] = "/"; 
+    OpenFile openFiles[MAX_OPEN_FILES];
 
 
       // Initializing elements of openFiles
     for (int i = 0; i < MAX_OPEN_FILES; i++) {
-        openFiles[i].filename[0] = '\0'; // Set the first character to null terminator
+        openFiles[i].filename[0] = '\0'; // Set to null terminator
         openFiles[i].mode[0] = '\0';     // Same for mode
         openFiles[i].offset = 0;         // Initialize offset to 0
     }
@@ -127,6 +110,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // Big loop start
     while (1) {
         printf("%s%s> ", argv[1], currentPath);
 
@@ -155,13 +139,11 @@ int main(int argc, char *argv[]) {
                     // Handle memory allocation failure
                     break;
                 }
-                //printf("%d %s",token_count,token[token_count]);
                 token_count++;
             }
             else{
                 for(int i = token_count; i<MAX_ARG_NUM;i++){
                     token[i] = NULL;
-                    //printf("%d %s",i,token[i]);
                 }
             }
         }
@@ -180,18 +162,19 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < token_count; i++) {
                 free(token[i]);
             }
+            free(working_root);
+            free(commands);
             break;
         }
 // --------------------------
 
-            //info, stat, ls, get, cd, read works only when the fat32 image is open.
         else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
                   (strcmp("cd", token[0]) == 0) || (strcmp("open", token[0]) == 0) ||
                   (strcmp("close", token[0]) == 0) || (strcmp("lsof", token[0]) == 0) ||
                   (strcmp("lseek", token[0]) == 0) || (strcmp("read", token[0]) == 0))
                   && (img_mounted == 0))
         {
-            printf("Error: Image must be mounted first.\n");
+            printf("Error: Image must be mounted first. Critical program error :( .\n");
         }
         else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
                   (strcmp("cd", token[0]) == 0) || (strcmp("open", token[0]) == 0) ||
@@ -199,28 +182,27 @@ int main(int argc, char *argv[]) {
                  (strcmp("lseek", token[0]) == 0) || (strcmp("read", token[0]) == 0))
                  && (img_mounted == 1))
         {
-            //Prints out all the information abou the fat32 image file.
+            // INFO
+            // Prints out all the information about the fat32 image file.
             if (strcmp("info", token[0]) == 0)
             {
                 printFileSystemInfo(bs);
                 continue;
             }
             
-                //Prints out the attribute, size, and lower cluster number
-                //for the specified folder or file.
-            // was mega comment thing here *
-                //Implementing ls function
-                //List downs the files from a current directory when fat32 image file is open.
+            // LS
+            // List downs the files from a current directory when fat32 image file is open.
             else if (strcmp("ls", token[0]) == 0)
             {
                 lsfunction(dir);
                 continue;
             }
+
+            // CD
+            // Change Directory Command
             else if (strcmp("cd", token[0]) == 0)
             {
-                // Change Directory Command
                 // Set find bool originally to false
-                
                 int find = 0;
                 if (token[1] == NULL)
                 {
@@ -257,7 +239,6 @@ int main(int argc, char *argv[]) {
                         while (counter < 16)
                         {
                             char word[100];
-                            // Clear out word
                             memset(word, 0, sizeof(word));
                             strncpy(word, token[1], strlen(token[1]));
 
@@ -281,10 +262,10 @@ int main(int argc, char *argv[]) {
                 }
                 continue;
             }
+
+            // OPEN
             else if (strcmp("open", token[0]) == 0)
             {
-
-
                 //Check if there is no file name
                 if (token[1] == NULL || token[2] == NULL)
                 {
@@ -316,71 +297,12 @@ int main(int argc, char *argv[]) {
                             printf("Failed to open file.\n");
                         }
                     }
-
-                    /*
-                    
-                    imageFile = fopen(token[1], "r");
-                    //Check if the given file name exists
-                    if (imageFile == NULL)
-                    {
-                        printf("Error: File system image not found.\n");
-                        continue;
-                    }
-                        //Check if the file is already open
-                    else if (open_file == 1)
-                    {
-                        printf("Error: File system image already open.\n");
-                        continue;
-                    }
-                    else
-                    {
-                        //Read in from the file
-                        fseek(imageFile, 11, SEEK_SET);
-                        fread(&bs.bytesPerSector, 2, 1, imageFile);
-
-                        fseek(imageFile, 13, SEEK_SET);
-                        fread(&bs.sectorsPerCluster, 1, 1, imageFile);
-
-                        fseek(imageFile, 14, SEEK_SET);
-                        fread(&bs.reservedSectorCnt, 1, 2, imageFile);
-
-                        fseek(imageFile, 16, SEEK_SET);
-                        fread(&bs.FATnum, 1, 1, imageFile);
-
-                        fseek(imageFile, 36, SEEK_SET);
-                        fread(&bs.FATSize32, 1, 4, imageFile);
-
-                        bs.rootAddress = (bs.bytesPerSector * bs.reservedSectorCnt) +
-                                       (bs.FATnum * bs.FATSize32 * bs.bytesPerSector);
-
-                        fseek(imageFile, bs.rootAddress, SEEK_SET);
-                        int i = 0;
-                        for (i = 0; i < 16; i++)
-                        {
-                            fread(&dir[i], sizeof(dir[i]), 1, imageFile);
-                        }
-
-                        printf("File successfully opened!!\n");
-                        open_file = 1;
-                    }*/
-                    // was mega comment * here
                 }
             }
+
+            // CLOSE
             else if (strcmp("close", token[0]) == 0)
             {
-                // if (open_file == 1)
-                // {
-                //     fclose(imageFile);
-                //     imageFile = NULL;
-                //     printf("File successfully closed!!\n");
-                //     open_file = 0;
-                // }
-                // else
-                // {
-                //     printf("Error: File system not open.\n");
-                // }
-                // continue;
-
                 // Cmd use check
                 if(token[1] == NULL ){
                     printf("Error - Usage: close [FILENAME]\n");
@@ -397,17 +319,22 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
+
+            // LSOF
             else if (strcmp("lsof", token[0]) == 0)
             {
                 lsoffunction(openFiles, img_mounted_name);
 
             }
+
+            // LSEEK
             else if (strcmp("lseek", token[0]) == 0) {
 
                 lseekfunction(openFiles, token[1], token[2]);
 
             }
 
+            // READ
             else if (strcmp("read", token[0]) == 0)
             {
 
@@ -453,7 +380,7 @@ int main(int argc, char *argv[]) {
                             printf("%s\n",temp_str);
 
                             free(temp_str);
-                            openFiles[filepos].offset = openFiles[filepos].offset + atoi(token[2]);
+                            //openFiles[filepos].offset = openFiles[filepos].offset + atoi(token[2]);
                             // update filesize too
                         }
                         else
@@ -478,16 +405,12 @@ int main(int argc, char *argv[]) {
 // ----------------------------------------
 
 
-        for (int i = 0; i < token_count; i++) {
-            free(token[i]);
-        }
-        free(working_root);
     }
 
-    free(commands);
     if(imageFile!= NULL){
         fclose(imageFile);
     }
+
     return 0;
 }
 

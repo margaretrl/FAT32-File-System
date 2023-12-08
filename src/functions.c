@@ -71,8 +71,8 @@ int match(struct DirectoryEntry dir[], char token[])
     return -2;
 }
 typedef struct {
-    char filename[256]; // or another suitable length
-    char mode[10];      // e.g., "r", "w"
+    char filename[256]; 
+    char mode[10];      // -r, -w, etc
     int offset;
     int fileSize;
 } FileRecord;
@@ -107,10 +107,8 @@ char *custom_strdup(const char *s, size_t n) {
     return (char *)memcpy(new_str, s, len);
 }
 
-// Function to truncate currentPath up to the last '/'
 void truncateToLastSlash(char* path) {
     if (path == NULL || strcmp(path, "/") == 0) {
-        // If path is NULL or already at root, do nothing.
         return;
     }
 
@@ -120,12 +118,10 @@ void truncateToLastSlash(char* path) {
             // If the only slash is at the beginning, it's the root directory
             *(lastSlash + 1) = '\0'; // Keep the root slash
         } else {
-            // Otherwise, terminate the string at the last slash
             *lastSlash = '\0';
         }
     }
 }
-
 
 void appendToPath(char* path, const char* toAppend, int maxLen) {
     if (path == NULL || toAppend == NULL) return;
@@ -133,15 +129,12 @@ void appendToPath(char* path, const char* toAppend, int maxLen) {
     // Calculate the remaining space in the path
     int spaceLeft = maxLen - strlen(path) - 1; // -1 for the null terminator
 
-    // Check if there's enough space to add a '/' and the new string
-    if (spaceLeft > 1) { // Need space for '/' and at least one character from toAppend
+    if (spaceLeft > 1) {
         // Append '/' only if the current path doesn't already end with one
         if (path[strlen(path) - 1] != '/') {
             strncat(path, "/", 1);
-            spaceLeft--; // Update space left after adding '/'
+            spaceLeft--;
         }
-
-        // Append to the path, but not more than the space left
         strncat(path, toAppend, spaceLeft);
     }
 }
