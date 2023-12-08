@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_PATH_LENGTH 260 
+#define MAX_MODE_LENGTH 10 
 // #define MAX_FILENAME_LENGTH 255
 // #define DELETED_ENTRY 0xE5
 // #define EMPTY_ENTRY 0x00
@@ -47,11 +49,11 @@ struct __attribute__((__packed__)) DirectoryEntry
 };
 
 typedef struct {
-    char filename[FILENAME_MAX]; // WHY DOES THIS WORK IF FILENAME_MAX ISNT DEFINED!!?
-    //Should it just be MAX_FILENAME_LENGTH?
-    char mode[4]; // Store "-r", "-w", "-rw", or "-wr"
-    int offset; // Current offset in the file
-    // Maybe add other necessary fields, like cluster number, directory entry info, etc.
+    char filename[MAX_FILENAME_LENGTH];
+    //char mode[10];
+    char mode [4];
+    int offset;
+    char path[260]; // This field should store the path
 } OpenFile;
 
 

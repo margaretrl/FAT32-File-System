@@ -1,6 +1,7 @@
 #include "fat32.h"
 #include "functions.h"
 #define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
+ 
 
 
 
@@ -50,7 +51,7 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
     }
 }
 
-int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]) {
+int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     // Check if the file is already open
     // !!! Need to add checking if the file exists
     // !!! cd check path
@@ -77,6 +78,8 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
         openFiles[openFilesCount].mode[3] = '\0';
 
         openFiles[openFilesCount].offset = 0;
+        
+        strncpy(openFiles[openFilesCount].path, currentPath, 11); 
         // Set other necessary file info, like cluster number, etc.
 
         //openFilesCount++;
@@ -108,12 +111,6 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
         return -1;
 }
 
-typedef struct {
-    char filename[MAX_FILENAME_LENGTH];
-    char mode[MAX_MODE_LENGTH];
-    int offset;
-    char path[MAX_PATH_LENGTH]; // This field should store the path
-} OpenFile;
 
 
 void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])

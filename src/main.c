@@ -321,7 +321,7 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
-                    int result = openFile(token[1],token[2],openFilesCount,openFiles);
+                    int result = openFile(token[1],token[2],openFilesCount,openFiles,currentPath);
                     if (result == 0) { // Assuming 0 is the success code
                         // Check if the file is in the openFiles array
                         openFilesCount++;
