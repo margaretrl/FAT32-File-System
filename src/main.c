@@ -15,13 +15,11 @@
 
 /*
  * TODO
- *  path for lsof only works when you cd into it
  *  // maybe change printing for like if a file doesnt exist
  */
 
 int img_mounted = 0;
 char img_mounted_name[50];
-
 
 int main(int argc, char *argv[]) {
 
@@ -32,6 +30,7 @@ int main(int argc, char *argv[]) {
     BootSectorData bs;
 
     if (argc != 2) {
+        // Wrong Usage
         printf("Usage: ./filesys [FAT32 ISO]\n");
         return 1;
     }
@@ -313,7 +312,7 @@ int main(int argc, char *argv[]) {
                 else{
                     if(closeFile(token[1], openFilesCount, openFiles) == 0){
                         printf("File sucessfully closed\n");
-                        openFilesCount--; // Decrement the count of open files
+                        //openFilesCount--; // Decrement the count of open files
                         // !!! i dont think its updateing the array openFiles tho and we gotta 
                         //like check if its in the list of opened files
                     }
@@ -407,11 +406,9 @@ int main(int argc, char *argv[]) {
             printf("Error: Invalid Command.\n");
             continue;
         }
-// ----------------------------------------
-
-
     }
 
+    // Check if file was already closed from exiting
     if(imageFile!= NULL){
         fclose(imageFile);
     }

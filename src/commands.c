@@ -101,6 +101,7 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
                 for (int j = i; j < openFilesCount - 1; j++) {
                     openFiles[j] = openFiles[j + 1];
                 }
+                openFilesCount--;
                 openFiles[openFilesCount].filename[0] = '\0';
                 openFiles[openFilesCount].mode[0] = '\0';
                 openFiles[openFilesCount].offset = '\0';
