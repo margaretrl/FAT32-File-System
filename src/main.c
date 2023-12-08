@@ -242,7 +242,8 @@ int main(int argc, char *argv[]) {
                             memset(word, 0, sizeof(word));
                             strncpy(word, token[1], strlen(token[1]));
 
-                            if (dir[counter].attributes != 0x20 && compare(dir[counter].name, word))
+                            if (dir[counter].attributes != 0x20 && compare(dir[counter].name,
+                             word))
                             {
                                 // Directory is found
                                 ReadDirEntries(dir, counter, imageFile, bs);
@@ -280,7 +281,8 @@ int main(int argc, char *argv[]) {
                     }
                     else
                     {
-                        int result = openFile(dir, token[1],token[2],openFilesCount,openFiles,currentPath);
+                        int result = openFile(dir, token[1],token[2],openFilesCount,
+                        openFiles,currentPath);
                         if (result == 0) { // Assuming 0 is the success code
                             // Check if the file is in the openFiles array
                             openFilesCount++;
@@ -312,7 +314,8 @@ int main(int argc, char *argv[]) {
                     if(closeFile(token[1], openFilesCount, openFiles) == 0){
                         printf("File sucessfully closed\n");
                         openFilesCount--; // Decrement the count of open files
-                        // !!! i dont think its updateing the array openFiles tho and we gotta like check if its in the list of opened files
+                        // !!! i dont think its updateing the array openFiles tho and we gotta 
+                        //like check if its in the list of opened files
                     }
                     else{
                         printf("Error: File is not open.\n");
@@ -364,14 +367,16 @@ int main(int argc, char *argv[]) {
                     }
                     else if (filepos != 1)
                     {
-                        if ((strcmp(openFiles[filepos].mode, "-r") == 0) || (strcmp(openFiles[filepos].mode, "-rw") == 0)
+                        if ((strcmp(openFiles[filepos].mode, "-r") == 0) || 
+                         (strcmp(openFiles[filepos].mode, "-rw") == 0)
                          || (strcmp(openFiles[filepos].mode, "-wr") == 0))
                         {
                             int bytesNum= atoi(token[2]);
 
                             int cluster = dir[index_counter].firstClusterLow;
 
-                            fseek(imageFile, openFiles[filepos].offset + LBAToOffset(cluster, bs), SEEK_SET);
+                            fseek(imageFile,
+                             openFiles[filepos].offset + LBAToOffset(cluster, bs), SEEK_SET);
 
                             char *temp_str = malloc(bytesNum);
 

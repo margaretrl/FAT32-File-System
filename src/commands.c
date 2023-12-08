@@ -4,15 +4,11 @@
 #define MAX_FILENAME_LENGTH 12
 
 
-
-
-
-
-
 void printFileSystemInfo(BootSectorData bs) {
     printf("Bytes per Sector: %d\n", bs.bytesPerSector);
     printf("Sectors per Cluster: %d\n", bs.sectorsPerCluster);
-    printf("Total clusters in Data Region: %d\n", (bs.totalSectors - (bs.reservedSectorCnt + (bs.FATnum * bs.FATSize32))/ bs.sectorsPerCluster));
+    printf("Total clusters in Data Region: %d\n", 
+      (bs.totalSectors - (bs.reservedSectorCnt + (bs.FATnum * bs.FATSize32))/ bs.sectorsPerCluster));
     printf("# of entries in one FAT: %f\n", ((bs.FATSize32 * bs.bytesPerSector) / 4.));
     printf("Size of Image (bytes): %ld\n",bs.fileSize);
     printf("Root Cluster: %d\n", bs.rootClusterNum);
@@ -52,12 +48,12 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
     }
 }
 
-int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
+int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode, 
+int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     // Check if the file is already open
     // !!! Need to add checking if the file exists
     // !!! cd check path
     for (int i = 0; i < openFilesCount; i++) {
-        //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
             printf("Error: File is already opened.\n");
             return -1;
@@ -76,7 +72,6 @@ int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode
         // ------------------
         // should there be a check here for if match doesnt work?
         openFiles[openFilesCount].fileSize = dir[match(dir, filename)].fileSize;
-        //printf("the file size is: %d", openFiles[openFilesCount].fileSize);
 
 
         // -------------
@@ -90,7 +85,6 @@ int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode
         openFiles[openFilesCount].offset = 0;
         
         strncpy(openFiles[openFilesCount].path, currentPath, 11); 
-        // Set other necessary file info, like cluster number, etc.
 
         return 0; // Success
     } else {
@@ -107,7 +101,6 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
                 for (int j = i; j < openFilesCount - 1; j++) {
                     openFiles[j] = openFiles[j + 1];
                 }
-                // may be a better way to do this
                 openFiles[openFilesCount].filename[0] = '\0';
                 openFiles[openFilesCount].mode[0] = '\0';
                 openFiles[openFilesCount].offset = '\0';
@@ -136,7 +129,8 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
         {
             // Printing each file's details incread HELLO 2luding the path
             //printf("%s",img_mounted_name);
-            printf("%-10d %-15s %-10s %-10d %s%s\n", i, openFiles[i].filename, openFiles[i].mode, openFiles[i].offset, img_mounted_name,openFiles[i].path);
+            printf("%-10d %-15s %-10s %-10d %s%s\n", i, openFiles[i].filename,
+             openFiles[i].mode, openFiles[i].offset, img_mounted_name,openFiles[i].path);
             i++;
         }
         //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
@@ -151,7 +145,8 @@ void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
     } else {
         for (int i = 0; i < 10; i++) // assuming max 10 open files
         {
-            if (strcmp(openFiles[i].filename, filename) == 0 && openFiles[i].filename[0] != '\0') {
+            if (strcmp(openFiles[i].filename, filename) == 0 
+             && openFiles[i].filename[0] != '\0') {
                 fileFound = i;
             }
         }
