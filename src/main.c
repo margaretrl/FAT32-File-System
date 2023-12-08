@@ -17,9 +17,10 @@
  * TODO
  *  path for lsof only works when you cd into it
  * Have to add filesize checker for lseek function
- *  check for read permissions before reading
+ *      add filesize to open file
  *  update offset during read
- *
+ *  if you put 200 for read and the filesize is 10, what happens
+ *              does it say no or does it read up to ten
  */
 
 #include <stdio.h>
