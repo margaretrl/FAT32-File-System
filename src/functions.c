@@ -77,33 +77,3 @@ typedef struct {
     int fileSize;
 } FileRecord;
 
-
-void setFileOffset(OpenFile openFiles[], const char *filename, int newOffset)
-{
-    int fileFound = 0;
-
-    for (int i = 0; i < 10; i++) // assuming max 10 open files
-    {
-        if (strcmp(openFiles[i].filename, filename) == 0 && openFiles[i].filename[0] != '\0')
-        {
-            fileFound = 1;
-
-            // Check if the new offset is larger than the file size
-            /*
-            if (newOffset > openFiles[i].fileSize)
-            {
-                printf("Error: Offset is larger than the file size.\n");
-                return;
-            }*/
-
-            openFiles[i].offset = newOffset;
-            printf("Offset of file '%s' set to %d.\n", filename, newOffset);
-            return;
-        }
-    }
-
-    if (!fileFound)
-    {
-        printf("Error: File '%s' is not opened or does not exist.\n", filename);
-    }
-}

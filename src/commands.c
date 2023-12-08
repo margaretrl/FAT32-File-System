@@ -53,6 +53,7 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
 int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]) {
     // Check if the file is already open
     // !!! Need to add checking if the file exists
+    // !!! cd check path
     for (int i = 0; i < openFilesCount; i++) {
         //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
@@ -124,5 +125,39 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])
             i++;
         }
         //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
+    }
+}
+
+
+void lseekfunction(OpenFile openFiles[], const char *filename, char* token)
+{
+    int fileFound = 0;
+    if (token[1] == NULL || token[2] == NULL) {
+        printf("Usage: lseek [FILENAME] [OFFSET]\n");
+    }
+    else {
+        int newOffset = atoi(token[2]);
+        for (int i = 0; i < 10; i++) // assuming max 10 open files
+        {
+            if (strcmp(openFiles[i].filename, filename) == 0 && openFiles[i].filename[0] != '\0') {
+                fileFound = 1;
+
+                // Check if the new offset is larger than the file size
+                /*
+                if (newOffset > openFiles[i].fileSize)
+                {
+                    printf("Error: Offset is larger than the file size.\n");
+                    return;
+                }*/
+
+                openFiles[i].offset = newOffset;
+                printf("Offset of file '%s' set to %d.\n", filename, newOffset);
+                return;
+            }
+        }
+
+        if (!fileFound) {
+            printf("Error: File '%s' is not opened or does not exist.\n", filename);
+        }
     }
 }

@@ -13,6 +13,7 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
 int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]);
 int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]);
 void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES]);
+void lseekfunction(OpenFile openFiles[], const char *filename, char *token);
 
 
 #endif

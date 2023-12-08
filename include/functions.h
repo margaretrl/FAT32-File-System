@@ -9,7 +9,6 @@
 int LBAToOffset(int sector, BootSectorData bs);
 int compare(char imgName[], char input[]);
 int match(struct DirectoryEntry dir[], char token[]);
-void setFileOffset(OpenFile openFiles[], const char *filename, int newOffset);
 
 
 #endif
