@@ -17,6 +17,7 @@
  * TODO
  *  path for lsof only works when you cd into it
  *  check if file is open before we can lseek
+ *  // maybe change printing for like if a file doesnt exist
  * Have to add filesize checker for lseek function
  *      add filesize to open file
  *  update offset during read
