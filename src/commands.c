@@ -1,7 +1,8 @@
 #include "fat32.h"
 #include "functions.h"
 #define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
- 
+#define MAX_FILENAME_LENGTH 12
+
 
 
 
@@ -55,6 +56,7 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     // Check if the file is already open
     // !!! Need to add checking if the file exists
     // !!! cd check path
+    printf("line 58\n");
     for (int i = 0; i < openFilesCount; i++) {
         //printf("%s\n",openFiles[i].filename);
         if (strcmp(openFiles[i].filename, filename) == 0) {
@@ -64,6 +66,8 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 
     // Validate the mode
+    printf("line 68\n");
+
     if (strcmp(mode, "-r") != 0 && strcmp(mode, "-w") != 0 &&
         strcmp(mode, "-rw") != 0 && strcmp(mode, "-wr") != 0) {
         printf("Error: Invalid mode.\n");
@@ -71,7 +75,10 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 
     if (openFilesCount < MAX_OPEN_FILES) {
-        strncpy(openFiles[openFilesCount].filename, filename, FILENAME_MAX - 1);
+        printf("line 77\n");
+        strncpy(openFiles[openFilesCount].filename, filename, MAX_FILENAME_LENGTH - 1);
+        printf("line 78\n");
+
         openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
 
         strncpy(openFiles[openFilesCount].mode, mode, 3);
@@ -113,7 +120,7 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
 
 
 
-void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])
+void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
 {
     // !!! still neeed to do formatting stuff for it
     if (openFiles[0].filename[0] == '\0')
@@ -128,7 +135,8 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])
         while ((i < MAX_OPEN_FILES) && (openFiles[i].filename[0] != '\0'))
         {
             // Printing each file's details including the path
-            printf("%-10d %-15s %-10s %-10d %s\n", i, openFiles[i].filename, openFiles[i].mode, openFiles[i].offset, openFiles[i].path);
+            printf("%s",img_mounted_name);
+            printf("%-10d %-15s %-10s %-10d %s%s\n", i, openFiles[i].filename, openFiles[i].mode, openFiles[i].offset, img_mounted_name,openFiles[i].path);
             i++;
         }
         //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));

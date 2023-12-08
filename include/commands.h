@@ -13,7 +13,7 @@ void lsfunction(struct DirectoryEntry dir[]);
 void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, BootSectorData bs);
 int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char * currPath);
 int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES]);
-void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES]);
+void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char img_mounted_name[50]);
 void lseekfunction(OpenFile openFiles[], const char *filename, char *token);
 
 
