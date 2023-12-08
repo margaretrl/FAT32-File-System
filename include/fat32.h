@@ -45,5 +45,12 @@ typedef struct {
     char path[260];
 } OpenFile;
 
+typedef struct {
+    char filename[256];
+    char mode[10];      // -r, -w, etc
+    int offset;
+    int fileSize;
+} FileRecord;
+
 
 #endif

@@ -51,8 +51,6 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
 int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode, 
 int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     // Check if the file is already open
-    // !!! Need to add checking if the file exists
-    // !!! cd check path
     for (int i = 0; i < openFilesCount; i++) {
         if (strcmp(openFiles[i].filename, filename) == 0) {
             printf("Error: %s is already opened.\n", filename);
@@ -70,11 +68,9 @@ int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
 
     if (openFilesCount < MAX_OPEN_FILES) {
         // ------------------
-        // should there be a check here for if match doesnt work?
+        // should there be a check here for if match doesnt work? !!!
         openFiles[openFilesCount].fileSize = dir[match(dir, filename)].fileSize;
 
-
-        // -------------
         strncpy(openFiles[openFilesCount].filename, filename, MAX_FILENAME_LENGTH - 1);
 
         openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
@@ -116,7 +112,6 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
 
 void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
 {
-    // !!! still neeed to do formatting stuff for it
     if (openFiles[0].filename[0] == '\0')
     {
         printf("No files currently open.\n");
@@ -128,13 +123,11 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
         int i=0;
         while ((i < MAX_OPEN_FILES) && (openFiles[i].filename[0] != '\0'))
         {
-            // Printing each file's details incread HELLO 2luding the path
-            //printf("%s",img_mounted_name);
+
             printf("%-10d %-15s %-10s %-10d %s%s\n", i, openFiles[i].filename,
              openFiles[i].mode, openFiles[i].offset, img_mounted_name,openFiles[i].path);
             i++;
         }
-        //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
     }
 }
 
@@ -172,7 +165,7 @@ void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
 
 
 
-    // do we need this
+    // do we need this !!!
     if (!fileFound) {
         printf("Error: File '%s' is not opened or does not exist.\n", filename);
     }

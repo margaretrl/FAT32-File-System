@@ -3,7 +3,7 @@
 
 #include "fat32.h"
 #include <stdio.h>
-#include <string.h> // dont know if im allowed to include this
+#include <string.h>
 #include <stdlib.h>
 
 #define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once

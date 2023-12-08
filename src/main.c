@@ -21,6 +21,9 @@
  *   the mode printed in the demo doesnt include the - but ours does
  *    change print statement for for offset being larger than
  *    should we not have an endl after printing the read cuz the demo doesnt
+ *    Should the executable be in bin because ours is but in the demo it isnt
+ *    commands.c line like 70 has a quesiton !!! and another one at the end
+ *    Have to take out .img file i think
  */
 
 int img_mounted = 0;

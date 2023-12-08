@@ -70,12 +70,7 @@ int match(struct DirectoryEntry dir[], char token[])
     }
     return -2;
 }
-typedef struct {
-    char filename[256]; 
-    char mode[10];      // -r, -w, etc
-    int offset;
-    int fileSize;
-} FileRecord;
+
 
 char *custom_strsep(char **stringp, const char *delim) {
     if (*stringp == NULL) { 
