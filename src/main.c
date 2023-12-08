@@ -243,7 +243,7 @@ int main(int argc, char *argv[]) {
                 imageFile = NULL;
             }
             for (int i = 0; i < token_count; i++) {
-            free(token[i]);
+                free(token[i]);
             }
             break;
         }
@@ -270,26 +270,9 @@ int main(int argc, char *argv[]) {
                 printFileSystemInfo(bs);
                 continue;
             }
-            /*
+            
                 //Prints out the attribute, size, and lower cluster number
                 //for the specified folder or file.
-            else if (strcmp("stat", token[0]) == 0)
-            {
-                if (token[1] == NULL)
-                {
-                    printf("Please specify the name of the directory.\n");
-                }
-                int index_counter = match(dir, token[1]);
-                if (index_counter == -2)
-                {
-                    printf("Error: File not found.\n");
-                } else {
-                    printf("Attribute\tSize\tStarting Cluster Number\n");
-                    printf("%d\t\t%d\t%d\n\n", dir[index_counter].attributes,
-                           dir[index_counter].fileSize, dir[index_counter].firstClusterLow);
-                }
-                continue;
-            }*/
             // was mega comment thing here *
                 //Implementing ls function
                 //List downs the files from a current directory when fat32 image file is open.
@@ -565,7 +548,9 @@ int main(int argc, char *argv[]) {
     }
 
     free(commands);
-    fclose(imageFile);
+    if(imageFile!= NULL){
+        fclose(imageFile);
+    }
     return 0;
 }
 
