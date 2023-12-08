@@ -346,11 +346,12 @@ int main(int argc, char *argv[]) {
                                 // Directory is found
                                 ReadDirEntries(dir, counter, imageFile, bs);
                                 find = 1;
+                                appendToPath(currentPath, token[1], MAX_CMD_SIZE);
                                 break;
                             }
                             counter++;
                         }
-                        appendToPath(currentPath, token[1], MAX_CMD_SIZE);
+                        
                         if (find == 0)
                         {
                             // Directory entered does not exist
