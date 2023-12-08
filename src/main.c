@@ -16,11 +16,12 @@
 /*
  * TODO
  *  path for lsof only works when you cd into it
+ *  check if file is open before we can lseek
  * Have to add filesize checker for lseek function
  *      add filesize to open file
  *  update offset during read
  *  if you put 200 for read and the filesize is 10, what happens
- *              does it say no or does it read up to ten
+ *  print up to filesize in read
  */
 
 #include <stdio.h>
@@ -490,7 +491,6 @@ int main(int argc, char *argv[]) {
             else if (strcmp("read", token[0]) == 0)
             {
 
-                // it like doesnt make an error if you only type in read and name of file
                 if (token[1] == NULL || token[2] == NULL )
                 {
                     printf("Please enter the file to read in the following format: ");
@@ -520,12 +520,11 @@ int main(int argc, char *argv[]) {
                         if ((strcmp(openFiles[filepos].mode, "-r") == 0) || (strcmp(openFiles[filepos].mode, "-rw") == 0)
                          || (strcmp(openFiles[filepos].mode, "-wr") == 0))
                         {
-                            int position = 0;
                             int bytesNum= atoi(token[2]);
 
                             int cluster = dir[index_counter].firstClusterLow;
 
-                            fseek(imageFile, position + LBAToOffset(cluster, bs), SEEK_SET);
+                            fseek(imageFile, openFiles[filepos].offset + LBAToOffset(cluster, bs), SEEK_SET);
 
                             char *temp_str = malloc(bytesNum);
 
@@ -534,6 +533,8 @@ int main(int argc, char *argv[]) {
                             printf("%s\n",temp_str);
 
                             free(temp_str);
+                            openFiles[filepos].offset = openFiles[filepos].offset + atoi(token[2]);
+                            // update filesize too
                         }
                         else
                         {
