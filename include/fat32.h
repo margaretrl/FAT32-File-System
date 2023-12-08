@@ -53,6 +53,7 @@ typedef struct {
     //char mode[10];
     char mode [4];
     int offset;
+    int fileSize;
     char path[260]; // This field should store the path
 } OpenFile;
 

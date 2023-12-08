@@ -52,7 +52,7 @@ void ReadDirEntries(struct DirectoryEntry dir[], int counter, FILE *imageFile, B
     }
 }
 
-int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
+int openFile(struct DirectoryEntry dir[], const char* filename, const char* mode, int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     // Check if the file is already open
     // !!! Need to add checking if the file exists
     // !!! cd check path
@@ -73,6 +73,13 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
     }
 
     if (openFilesCount < MAX_OPEN_FILES) {
+        // ------------------
+        // should there be a check here for if match doesnt work?
+        openFiles[openFilesCount].fileSize = dir[match(dir, filename)].fileSize;
+        //printf("the file size is: %d", openFiles[openFilesCount].fileSize);
+
+
+        // -------------
         strncpy(openFiles[openFilesCount].filename, filename, MAX_FILENAME_LENGTH - 1);
 
         openFiles[openFilesCount].filename[FILENAME_MAX - 1] = '\0'; // Ensure null-termination
@@ -85,7 +92,6 @@ int openFile(const char* filename, const char* mode, int openFilesCount,OpenFile
         strncpy(openFiles[openFilesCount].path, currentPath, 11); 
         // Set other necessary file info, like cluster number, etc.
 
-        //openFilesCount++;
         return 0; // Success
     } else {
         printf("Error: Too many open files.\n");
@@ -101,13 +107,11 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
                 for (int j = i; j < openFilesCount - 1; j++) {
                     openFiles[j] = openFiles[j + 1];
                 }
-                openFilesCount--;
                 // may be a better way to do this
                 openFiles[openFilesCount].filename[0] = '\0';
                 openFiles[openFilesCount].mode[0] = '\0';
                 openFiles[openFilesCount].offset = '\0';
-
-
+                openFiles[openFilesCount].fileSize = '\0';
                 return 0;
             }
         }
@@ -130,8 +134,8 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
         int i=0;
         while ((i < MAX_OPEN_FILES) && (openFiles[i].filename[0] != '\0'))
         {
-            // Printing each file's details including the path
-            printf("%s",img_mounted_name);
+            // Printing each file's details incread HELLO 2luding the path
+            //printf("%s",img_mounted_name);
             printf("%-10d %-15s %-10s %-10d %s%s\n", i, openFiles[i].filename, openFiles[i].mode, openFiles[i].offset, img_mounted_name,openFiles[i].path);
             i++;
         }
@@ -140,35 +144,43 @@ void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES], char* img_mounted_name)
 }
 
 
-void lseekfunction(OpenFile openFiles[], const char *filename, char* token)
-{
-    int fileFound = 0;
-    if (token[1] == NULL || token[2] == NULL) {
+void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
+    int fileFound = -1;
+    if (filename == NULL || offset == NULL) {
         printf("Usage: lseek [FILENAME] [OFFSET]\n");
-    }
-    else {
-        int newOffset = atoi(token[2]);
+    } else {
         for (int i = 0; i < 10; i++) // assuming max 10 open files
         {
             if (strcmp(openFiles[i].filename, filename) == 0 && openFiles[i].filename[0] != '\0') {
-                fileFound = 1;
-
-                // Check if the new offset is larger than the file size
-                /*
-                if (newOffset > openFiles[i].fileSize)
-                {
-                    printf("Error: Offset is larger than the file size.\n");
-                    return;
-                }*/
-
-                openFiles[i].offset = newOffset;
-                printf("Offset of file '%s' set to %d.\n", filename, newOffset);
-                return;
+                fileFound = i;
             }
         }
 
-        if (!fileFound) {
-            printf("Error: File '%s' is not opened or does not exist.\n", filename);
+        if (fileFound != -1) {
+            int newOffset = atoi(offset);
+
+            if (newOffset > openFiles[fileFound].fileSize) {
+                printf("Error: Offset is larger than the file size.\n");
+                return;
+            }
+
+            openFiles[fileFound].offset += newOffset;
+            printf("Offset of file '%s' set to %d.\n", filename, newOffset);
+            return;
+
         }
+        else
+        {
+            printf("File must be opened first\n");
+        }
+
+        // Check if the new offset is larger than the file size
+
+
+
+
+    if (!fileFound) {
+        printf("Error: File '%s' is not opened or does not exist.\n", filename);
     }
+}
 }
