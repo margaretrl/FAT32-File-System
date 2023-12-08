@@ -92,20 +92,19 @@ int main(int argc, char *argv[]) {
         img_mounted = 1;
     }
 
-
+    // Initalize current path
     char currentPath[MAX_CMD_SIZE] = "/"; 
     OpenFile openFiles[MAX_OPEN_FILES];
 
 
       // Initializing elements of openFiles
     for (int i = 0; i < MAX_OPEN_FILES; i++) {
-        openFiles[i].filename[0] = '\0'; // Set to null terminator
-        openFiles[i].mode[0] = '\0';     // Same for mode
-        openFiles[i].offset = 0;         // Initialize offset to 0
+        openFiles[i].filename[0] = '\0';
+        openFiles[i].mode[0] = '\0';
+        openFiles[i].offset = 0;
     }
 
     int openFilesCount = 0; // Current number of open files
-
 
     char *commands = (char *)malloc(MAX_CMD_SIZE);
     if (!commands) {
@@ -116,10 +115,11 @@ int main(int argc, char *argv[]) {
 
     // Big loop start
     while (1) {
+        // Print statement
         printf("%s%s> ", argv[1], currentPath);
 
         if (!fgets(commands, MAX_CMD_SIZE, stdin)) {
-            // Handle error or EOF
+            // EOF
             break;
         }
 
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
         char *working_str = custom_strdup(commands, MAX_CMD_SIZE);
 
         if (!working_str) {
-            // Handle memory allocation failure
+            // Memory allocation failure
             break;
         }
 
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
             if (*arg_ptr != '\0') {  // Check if token is not empty
                 token[token_count] = custom_strdup(arg_ptr, MAX_CMD_SIZE);
                 if (token[token_count] == NULL) {
-                    // Handle memory allocation failure
+                    // Memory allocation failure
                     break;
                 }
                 token_count++;
@@ -154,15 +154,19 @@ int main(int argc, char *argv[]) {
 
         if (token[0] == NULL)
         {
+            // No command entered yet
             continue;
         }
         else if (strcmp("exit", token[0]) == 0)
         {
+            // Exit command entered
             if (img_mounted == 1)
             {
+                // Close image first
                 fclose(imageFile);
                 imageFile = NULL;
             }
+            // Free memory and exit
             for (int i = 0; i < token_count; i++) {
                 free(token[i]);
             }
@@ -170,8 +174,6 @@ int main(int argc, char *argv[]) {
             free(commands);
             break;
         }
-// --------------------------
-
         else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
                   (strcmp("cd", token[0]) == 0) || (strcmp("open", token[0]) == 0) ||
                   (strcmp("close", token[0]) == 0) || (strcmp("lsof", token[0]) == 0) ||
@@ -279,6 +281,7 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
+                    // Check if file exists in directory
                     if (match(dir, token[1]) == -2)
                     {
                         printf("File %s does not exist.\n", token[1]);
@@ -292,6 +295,7 @@ int main(int argc, char *argv[]) {
                             openFilesCount++;
                             for (int i = 0; i < openFilesCount; i++) {
                                 if (strcmp(openFiles[i].filename, token[1]) == 0) {
+                                    // File was opened successfully
                                     printf("Opened %s.\n", token[1]);
                                     break;
                                 }
@@ -314,12 +318,11 @@ int main(int argc, char *argv[]) {
                 }
                 else{
                     if(closeFile(token[1], openFilesCount, openFiles) == 0){
+                        // Successfully closed file
                         printf("Closed %s\n", token[1]);
-                        //openFilesCount--; // Decrement the count of open files
-                        // !!! i dont think its updateing the array openFiles tho and we gotta 
-                        //like check if its in the list of opened files
                     }
                     else{
+                        // File needs to be opened before closing
                         printf("Error: %s is not open.\n", token[1]);
                     }
                 }
@@ -342,7 +345,7 @@ int main(int argc, char *argv[]) {
             // READ
             else if (strcmp("read", token[0]) == 0)
             {
-
+                // Readu use check
                 if (token[1] == NULL || token[2] == NULL )
                 {
                     printf("Please enter the file to read in the following format: ");
@@ -350,12 +353,13 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
+                    // Check if file is in directory
                     int index_counter= match(dir,token[1]);
-
                     int filepos = -1;
                     int i=0;
                     while(openFiles[i].filename[0] != '\0')
                     {
+                        // Check if file is opened
                         if (strcmp(token[1],openFiles[i].filename) == 0)
                         {
                             filepos = i;
@@ -364,11 +368,13 @@ int main(int argc, char *argv[]) {
                     }
                     if(index_counter==-2)
                     {
+                        // File is not in directory
                         printf("Error: %s not found \n", token[1]);
 
                     }
                     else if (filepos != -1)
                     {
+                        // Check if file has read permissions before reading it
                         if ((strcmp(openFiles[filepos].mode, "-r") == 0) || 
                          (strcmp(openFiles[filepos].mode, "-rw") == 0)
                          || (strcmp(openFiles[filepos].mode, "-wr") == 0))
