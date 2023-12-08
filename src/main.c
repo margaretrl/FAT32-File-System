@@ -227,7 +227,14 @@ int main(int argc, char *argv[]) {
                     // Handle memory allocation failure
                     break;
                 }
+                //printf("%d %s",token_count,token[token_count]);
                 token_count++;
+            }
+            else{
+                for(int i = token_count; i<MAX_ARG_NUM;i++){
+                    token[i] = NULL;
+                    //printf("%d %s",i,token[i]);
+                }
             }
         }
 
