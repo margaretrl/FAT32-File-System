@@ -20,6 +20,7 @@
  *   aybe change printing for when a file is opened
  *   the mode printed in the demo doesnt include the - but ours does
  *    change print statement for for offset being larger than
+ *    should we not have an endl after printing the read cuz the demo doesnt
  */
 
 int img_mounted = 0;
@@ -260,7 +261,7 @@ int main(int argc, char *argv[]) {
                         if (find == 0)
                         {
                             // Directory entered does not exist
-                            printf("Error: No such file or directory.\n");
+                            printf("Error: %s Does not exist.\n", token[1]);
                         }
                     }
                 }
@@ -280,7 +281,7 @@ int main(int argc, char *argv[]) {
                 {
                     if (match(dir, token[1]) == -2)
                     {
-                        printf("File does not exist\n");
+                        printf("File %s does not exist.\n", token[1]);
                     }
                     else
                     {
@@ -290,10 +291,8 @@ int main(int argc, char *argv[]) {
                             // Check if the file is in the openFiles array
                             openFilesCount++;
                             for (int i = 0; i < openFilesCount; i++) {
-                                //printf("%s\n",openFiles[i].filename);
                                 if (strcmp(openFiles[i].filename, token[1]) == 0) {
-                                    printf("File is successfully opened.\n");
-                                    //openFilesCount++;
+                                    printf("Opened %s.\n", token[1]);
                                     break;
                                 }
                             }
@@ -315,13 +314,13 @@ int main(int argc, char *argv[]) {
                 }
                 else{
                     if(closeFile(token[1], openFilesCount, openFiles) == 0){
-                        printf("File sucessfully closed\n");
+                        printf("Closed %s\n", token[1]);
                         //openFilesCount--; // Decrement the count of open files
                         // !!! i dont think its updateing the array openFiles tho and we gotta 
                         //like check if its in the list of opened files
                     }
                     else{
-                        printf("Error: File is not open.\n");
+                        printf("Error: %s is not open.\n", token[1]);
                     }
                 }
             }
@@ -365,7 +364,7 @@ int main(int argc, char *argv[]) {
                     }
                     if(index_counter==-2)
                     {
-                        printf("Error: File not found \n");
+                        printf("Error: %s not found \n", token[1]);
 
                     }
                     else if (filepos != -1)
@@ -388,14 +387,12 @@ int main(int argc, char *argv[]) {
                             printf("%s\n",temp_str);
 
                             free(temp_str);
-                            //openFiles[filepos].offset = openFiles[filepos].offset + atoi(token[2]);
-                            // update filesize too
+
                         }
                         else
                         {
                             printf("File must have read permissions\n");
                         }
-
 
                     }
                     else

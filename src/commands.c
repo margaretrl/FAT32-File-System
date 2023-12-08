@@ -55,7 +55,7 @@ int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     // !!! cd check path
     for (int i = 0; i < openFilesCount; i++) {
         if (strcmp(openFiles[i].filename, filename) == 0) {
-            printf("Error: File is already opened.\n");
+            printf("Error: %s is already opened.\n", filename);
             return -1;
         }
     }
@@ -156,12 +156,11 @@ void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
             int newOffset = atoi(offset);
 
             if (newOffset > openFiles[fileFound].fileSize) {
-                printf("Error: Offset is larger than the file size.\n");
+                printf("Error: Reached end of file.\n");
                 return;
             }
 
             openFiles[fileFound].offset += newOffset;
-            printf("Offset of file '%s' set to %d.\n", filename, newOffset);
             return;
 
         }
@@ -170,11 +169,10 @@ void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
             printf("File must be opened first\n");
         }
 
-        // Check if the new offset is larger than the file size
 
 
 
-
+    // do we need this
     if (!fileFound) {
         printf("Error: File '%s' is not opened or does not exist.\n", filename);
     }
