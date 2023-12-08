@@ -367,6 +367,7 @@ int main(int argc, char *argv[]) {
             else if (strcmp("open", token[0]) == 0)
             {
 
+
                 //Check if there is no file name
                 if (token[1] == NULL || token[2] == NULL)
                 {
@@ -375,6 +376,7 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
+
                     printf("about to print\n");
 
                     int result = openFile(token[1],token[2],openFilesCount,openFiles,currentPath);
@@ -497,13 +499,24 @@ int main(int argc, char *argv[]) {
                 {
                     int index_counter= match(dir,token[1]);
 
+                    int opened = 1;
+                    int i=0;
+                    while(openFiles[i].filename[0] != '\0')
+                    {
+                        if (strcmp(token[1],openFiles[i].filename) == 0)
+                        {
+                            opened = 0;
+                        }
+                        i++;
+                    }
                     if(index_counter==-2)
                     {
                         printf("Error: File not found \n");
 
                     }
-                    else
+                    else if (opened == 0)
                     {
+
                         int position = 0;
                         int bytesNum= atoi(token[2]);
 
@@ -519,6 +532,10 @@ int main(int argc, char *argv[]) {
 
                         free(temp_str);
 
+                    }
+                    else
+                    {
+                        printf("File must be opened first\n");
                     }
                 }
             }
