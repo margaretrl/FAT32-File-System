@@ -16,8 +16,12 @@
 /*
  * TODO
  * Are we allowed to exit when theres file open
- *
- *
+ *  path for lsof only works when you cd into it
+ * * Are we allowed to exit when theres file open
+ * my read and open arent like stopping for some reason
+ * Have to add filesize checker for lseek function
+ * Can you only use lseek if you have write permissions
+ *  check for read permissions before reading
  *
  *
  */
@@ -107,6 +111,7 @@ void appendToPath(char* path, const char* toAppend, int maxLen) {
 // Add other necessary includes and definitions here
 
 int img_mounted = 0;
+char img_mounted_name[50];
 
 int main(int argc, char *argv[]) {
 
@@ -121,6 +126,7 @@ int main(int argc, char *argv[]) {
     }
 
     FILE *imageFile = fopen(argv[1], "rb");
+    strcpy(img_mounted_name,argv[1]);
     if (!imageFile) {
         printf("Error: File does not exist.\n");
         return 1;
@@ -365,6 +371,8 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
+                    printf("about to print\n");
+
                     int result = openFile(token[1],token[2],openFilesCount,openFiles,currentPath);
                     if (result == 0) { // Assuming 0 is the success code
                         // Check if the file is in the openFiles array
@@ -463,7 +471,7 @@ int main(int argc, char *argv[]) {
             }
             else if (strcmp("lsof", token[0]) == 0)
             {
-                lsoffunction(openFiles);
+                lsoffunction(openFiles, img_mounted_name);
 
             }
             else if (strcmp("lseek", token[0]) == 0) {
