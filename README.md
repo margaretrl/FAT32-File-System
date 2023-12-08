@@ -16,7 +16,7 @@ The purpose of this project is to familiarize you with basic file-system design 
 - [X] Close the program and return an error message if the file does not exist.
 - [X] Implement info command to parse and display boot sector data.
 - [X] Implement exit command to safely close the program and free resources.
-- **Completed by**: Margaret Riva and Hannah Housand 
+- **Completed by**: Margaret Rivas and Hannah Housand 
 - **Assigned to**: Margaret Rivas
 
 ### Part 2: Navigation
@@ -38,9 +38,9 @@ The purpose of this project is to familiarize you with basic file-system design 
 ### Part 4: Read
 - **Responsibilities**:
 - [X]  Develop structure to store opened files.
-- [] Implement `open [FILENAME] [FLAGS]` command to open files with specific modes.
-- [] Implement `close [FILENAME]`, `lsof`, and `lseek [FILENAME] [OFFSET]` commands.
-- [ ] Implement `read [FILENAME] [SIZE]` command to read data from a file.
+- [X] Implement `open [FILENAME] [FLAGS]` command to open files with specific modes.
+- [X] Implement `close [FILENAME]`, `lsof`, and `lseek [FILENAME] [OFFSET]` commands.
+- [X] Implement `read [FILENAME] [SIZE]` command to read data from a file.
 - **Completed by**: Margaret Rivas Hannah Housand and Sophia Quinoa 
 - **Assigned to**: Margaret Rivas, Hannah Housand, Sophia Quinoa
 
@@ -101,12 +101,11 @@ This will build the executable in root
 ```
 
 ## Bugs
-- **Bug 1**:
-- **Bug 2**: 
+- **Bug 1**: N/A
+- **Bug 2**: N/A
 
 ## Considerations
 - We assume FILENAME will be less than 11 characters (8 for name, 3 for extension).
-- We assume No need to worry about “/” expansions into deeper directories.
 - We assume file and directory names will not contain spaces or file extensions (e.g., .txt, .exe).
 - We assume file and directory names will be names (not paths) within the current working directory.
 - We expect to receive the path of the image file in the main program’s first argument (argv[1]).
