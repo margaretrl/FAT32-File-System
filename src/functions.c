@@ -77,3 +77,71 @@ typedef struct {
     int fileSize;
 } FileRecord;
 
+char *custom_strsep(char **stringp, const char *delim) {
+    if (*stringp == NULL) { 
+        return NULL;
+    }
+
+    char *start = *stringp;
+    char *end;
+
+    if ((end = strpbrk(start, delim)) != NULL) {
+        *end = '\0';  // Replace the delimiter with null terminator
+        *stringp = end + 1;
+    } else {
+        *stringp = NULL;
+    }
+
+    return start;
+}
+
+char *custom_strdup(const char *s, size_t n) {
+    size_t len = strnlen(s, n);
+    char *new_str = (char *)malloc(len + 1);
+
+    if (new_str == NULL) {
+        return NULL;
+    }
+
+    new_str[len] = '\0';
+    return (char *)memcpy(new_str, s, len);
+}
+
+// Function to truncate currentPath up to the last '/'
+void truncateToLastSlash(char* path) {
+    if (path == NULL || strcmp(path, "/") == 0) {
+        // If path is NULL or already at root, do nothing.
+        return;
+    }
+
+    char* lastSlash = strrchr(path, '/');
+    if (lastSlash != NULL) {
+        if (lastSlash == path) {
+            // If the only slash is at the beginning, it's the root directory
+            *(lastSlash + 1) = '\0'; // Keep the root slash
+        } else {
+            // Otherwise, terminate the string at the last slash
+            *lastSlash = '\0';
+        }
+    }
+}
+
+
+void appendToPath(char* path, const char* toAppend, int maxLen) {
+    if (path == NULL || toAppend == NULL) return;
+
+    // Calculate the remaining space in the path
+    int spaceLeft = maxLen - strlen(path) - 1; // -1 for the null terminator
+
+    // Check if there's enough space to add a '/' and the new string
+    if (spaceLeft > 1) { // Need space for '/' and at least one character from toAppend
+        // Append '/' only if the current path doesn't already end with one
+        if (path[strlen(path) - 1] != '/') {
+            strncat(path, "/", 1);
+            spaceLeft--; // Update space left after adding '/'
+        }
+
+        // Append to the path, but not more than the space left
+        strncat(path, toAppend, spaceLeft);
+    }
+}
