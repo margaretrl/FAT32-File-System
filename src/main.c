@@ -16,6 +16,10 @@
 /*
  * TODO
  *  // maybe change printing for like if a file doesnt exist
+ *  // change printing for no file or directory
+ *   aybe change printing for when a file is opened
+ *   the mode printed in the demo doesnt include the - but ours does
+ *    change print statement for for offset being larger than
  */
 
 int img_mounted = 0;
@@ -355,6 +359,7 @@ int main(int argc, char *argv[]) {
                     {
                         if (strcmp(token[1],openFiles[i].filename) == 0)
                         {
+                            printf("the name is: %s",openFiles[i].filename );
                             filepos = i;
                         }
                         i++;
