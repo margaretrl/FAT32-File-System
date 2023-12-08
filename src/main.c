@@ -63,6 +63,46 @@ char *custom_strdup(const char *s, size_t n) {
     return (char *)memcpy(new_str, s, len);
 }
 
+// Function to truncate currentPath up to the last '/'
+void truncateToLastSlash(char* path, int maxLen) {
+    if (path == NULL) return;
+
+    // Find the last occurrence of '/'
+    char* lastSlash = strrchr(path, '/');
+    if (lastSlash != NULL) {
+        // Calculate the length from the start to the last '/'
+        int length = lastSlash - path + 1;
+
+        // Ensure we don't exceed maxLen
+        if (length < maxLen) {
+            path[length] = '\0'; // Truncate the string
+        } else {
+            // Handle the case where the path is too long
+            // This could involve truncating at maxLen, logging an error, etc.
+            // For simplicity, just setting it as an empty string
+            path[0] = '\0';
+        }
+    }
+}
+
+void appendToPath(char* path, const char* toAppend, int maxLen) {
+    if (path == NULL || toAppend == NULL) return;
+
+    // Calculate the remaining space in the path
+    int spaceLeft = maxLen - strlen(path) - 1; // -1 for the null terminator
+
+    // Check if there's enough space to add a '/' and the new string
+    if (spaceLeft > 1) { // Need space for '/' and at least one character from toAppend
+        // Append '/' only if the current path doesn't already end with one
+        if (path[strlen(path) - 1] != '/') {
+            strncat(path, "/", 1);
+            spaceLeft--; // Update space left after adding '/'
+        }
+
+        // Append to the path, but not more than the space left
+        strncat(path, toAppend, spaceLeft);
+    }
+}
 
 // Add other necessary includes and definitions here
 
@@ -132,7 +172,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    char currentPath[MAX_FILENAME_LENGTH] = "/"; // Adjust as needed
+    char currentPath[MAX_CMD_SIZE] = "/"; // Adjust as needed
     OpenFile openFiles[MAX_OPEN_FILES]; // Adjust as needed
 
 
@@ -154,7 +194,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (1) {
-        printf("[%s]%s> ", argv[1], currentPath);
+        printf("%s%s> ", argv[1], currentPath);
 
         if (!fgets(commands, MAX_CMD_SIZE, stdin)) {
             // Handle error or EOF
@@ -267,6 +307,9 @@ int main(int argc, char *argv[]) {
                     int counter = 0;
                     if (!strcmp(token[1], "..") || !strcmp(token[1], "."))
                     {
+                        if(!strcmp(token[1], "..")){
+                            truncateToLastSlash(currentPath,MAX_CMD_SIZE);
+                        }
                         // Directory is ".." or "."
                         while (counter < 16)
                         {
@@ -301,6 +344,7 @@ int main(int argc, char *argv[]) {
                             }
                             counter++;
                         }
+                        appendToPath(currentPath, token[1], MAX_CMD_SIZE);
                         if (find == 0)
                         {
                             // Directory entered does not exist
