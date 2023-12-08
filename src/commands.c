@@ -108,20 +108,30 @@ int closeFile(const char* filename, int openFilesCount,OpenFile openFiles[MAX_OP
         return -1;
 }
 
+typedef struct {
+    char filename[MAX_FILENAME_LENGTH];
+    char mode[MAX_MODE_LENGTH];
+    int offset;
+    char path[MAX_PATH_LENGTH]; // This field should store the path
+} OpenFile;
+
+
 void lsoffunction(OpenFile openFiles[MAX_OPEN_FILES])
 {
     // !!! still neeed to do formatting stuff for it
     if (openFiles[0].filename[0] == '\0')
     {
-        // I feel like this may be wrong condition
         printf("No files currently open.\n");
     }
     else
-    {
+    {       //print header 
+            printf("%-10s %-15s %-10s %-10s %s\n", "INDEX", "NAME", "MODE", "OFFSET", "PATH");
+
         int i=0;
-        while((i < 10) && (openFiles[i].filename[0] != '\0'))
+        while ((i < MAX_OPEN_FILES) && (openFiles[i].filename[0] != '\0'))
         {
-            printf("%d    %s    %s    %d    \n", i, openFiles[i].filename, openFiles[i].mode,openFiles[i].offset );
+            // Printing each file's details including the path
+            printf("%-10d %-15s %-10s %-10d %s\n", i, openFiles[i].filename, openFiles[i].mode, openFiles[i].offset, openFiles[i].path);
             i++;
         }
         //printf("this is gonna be the lsof function and size is: %lu\n", sizeof(openFiles));
