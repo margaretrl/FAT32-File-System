@@ -353,13 +353,12 @@ int main(int argc, char *argv[]) {
                 {
                     int index_counter= match(dir,token[1]);
 
-                    int filepos = 1;
+                    int filepos = -1;
                     int i=0;
                     while(openFiles[i].filename[0] != '\0')
                     {
                         if (strcmp(token[1],openFiles[i].filename) == 0)
                         {
-                            printf("the name is: %s",openFiles[i].filename );
                             filepos = i;
                         }
                         i++;
@@ -369,7 +368,7 @@ int main(int argc, char *argv[]) {
                         printf("Error: File not found \n");
 
                     }
-                    else if (filepos != 1)
+                    else if (filepos != -1)
                     {
                         if ((strcmp(openFiles[filepos].mode, "-r") == 0) || 
                          (strcmp(openFiles[filepos].mode, "-rw") == 0)
