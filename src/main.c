@@ -15,15 +15,15 @@
 
 /*
  * TODO
- *  // maybe change printing for like if a file doesnt exist
- *  // change printing for no file or directory
- *   aybe change printing for when a file is opened
  *   the mode printed in the demo doesnt include the - but ours does
- *    change print statement for for offset being larger than
  *    should we not have an endl after printing the read cuz the demo doesnt
  *    Should the executable be in bin because ours is but in the demo it isnt
  *    commands.c line like 70 has a quesiton !!! and another one at the end
  *    Have to take out .img file i think
+ *    same with do we need to change offset of file after reading
+ *              it says this in the instructions: "Update the offset of the file to offset + [SIZE] (or to the size of the file if you reached the
+end of the file)"
+    make sure the margins or like lines are fine
  */
 
 int img_mounted = 0;
