@@ -12,19 +12,19 @@ The purpose of this project is to familiarize you with basic file-system design 
 ### Part 1: Mount the Image File
 - **Responsibilities**:
 - [X] Mount the image file through command line arguments (./filesys [FAT32 ISO]).
-- [ ] Read the image file and implement the correct structure to store and navigate the FAT32 format.
+- [X] Read the image file and implement the correct structure to store and navigate the FAT32 format.
 - [X] Close the program and return an error message if the file does not exist.
 - [X] Implement info command to parse and display boot sector data.
-- [ ] Implement exit command to safely close the program and free resources.
-- **Completed by**: 
+- [X] Implement exit command to safely close the program and free resources.
+- **Completed by**: Margaret Riva and Hannah Housand 
 - **Assigned to**: Margaret Rivas
 
 ### Part 2: Navigation
 - **Responsibilities**:
-- [ ] Implement `cd [DIRNAME]` command to change the current working directory.
-- [ ] Implement `ls` command to list directories in the current working directory.
-- [ ] Error handling for non-existent directories or incorrect directory names.
-- **Completed by**: 
+- [X] Implement `cd [DIRNAME]` command to change the current working directory.
+- [X] Implement `ls` command to list directories in the current working directory.
+- [X] Error handling for non-existent directories or incorrect directory names.
+- **Completed by**: Margaret Rivas Sophia Quinoa and Hannah Housand 
 - **Assigned to**: Margaret Rivas and Hannah Housand
 
 ### Part 3: Create [NOT REQUIRED ANYMORE]
@@ -37,11 +37,11 @@ The purpose of this project is to familiarize you with basic file-system design 
 
 ### Part 4: Read
 - **Responsibilities**:
-- [ ]  Develop structure to store opened files.
-- [ ] Implement `open [FILENAME] [FLAGS]` command to open files with specific modes.
-- [ ] Implement `close [FILENAME]`, `lsof`, and `lseek [FILENAME] [OFFSET]` commands.
+- [X]  Develop structure to store opened files.
+- [] Implement `open [FILENAME] [FLAGS]` command to open files with specific modes.
+- [] Implement `close [FILENAME]`, `lsof`, and `lseek [FILENAME] [OFFSET]` commands.
 - [ ] Implement `read [FILENAME] [SIZE]` command to read data from a file.
-- **Completed by**: 
+- **Completed by**: Margaret Rivas Hannah Housand and Sophia Quinoa 
 - **Assigned to**: Margaret Rivas, Hannah Housand, Sophia Quinoa
 
 ### Part 5: Update [NOT REQUIRED ANYMORE]
