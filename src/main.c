@@ -12,16 +12,15 @@
 #define MAX_CMD_SIZE 255 // The maximum command-line size
 #define MAX_ARG_NUM 5 // Assumption based on implemented cmds
 #define MAX_FILE_SIZE 16
-//#define SECTOR_SIZE 512
-//#define DIR_ENTRY_SIZE 32
 
-
-// int32_t rootDirSectors = 0;
-// int32_t firstDataSector = 0;
-// int32_t firstClusterSector = 0;
-
-//#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
-
+/*
+ * TODO
+ * Are we allowed to exit when theres file open
+ *
+ *
+ *
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,8 +69,7 @@ char *custom_strdup(const char *s, size_t n) {
 int img_mounted = 0;
 
 int main(int argc, char *argv[]) {
-    // ... [Your struct definitions and global variables]
-    
+
     //Initialize Directory struct
     struct DirectoryEntry dir[16];
     // Initialize boot sector data struct
@@ -133,12 +131,11 @@ int main(int argc, char *argv[]) {
         img_mounted = 1;
     }
 
-    // ... [Your file handling logic]
 
     char currentPath[MAX_FILENAME_LENGTH] = "/"; // Adjust as needed
     OpenFile openFiles[MAX_OPEN_FILES]; // Adjust as needed
 
-    // ... [Initializing elements of openFiles]
+
       // Initializing elements of openFiles
     for (int i = 0; i < MAX_OPEN_FILES; i++) {
         openFiles[i].filename[0] = '\0'; // Set the first character to null terminator
@@ -188,25 +185,20 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // ... [Your command processing logic]
         if (token[0] == NULL)
         {
             continue;
         }
         else if (strcmp("exit", token[0]) == 0)
         {
-            //!!! are we allowed to exit when there are files open
             if (img_mounted == 1)
             {
                 fclose(imageFile);
                 imageFile = NULL;
             }
-            printf("done exiting\n");
             for (int i = 0; i < token_count; i++) {
-            printf("freeing tokens\n");
             free(token[i]);
             }
-            //free(working_root);
             break;
         }
 // --------------------------
@@ -320,7 +312,6 @@ int main(int argc, char *argv[]) {
             }
             else if (strcmp("open", token[0]) == 0)
             {
-                //printf("%d\n",openFilesCount);
 
                 //Check if there is no file name
                 if (token[1] == NULL || token[2] == NULL)
@@ -330,7 +321,7 @@ int main(int argc, char *argv[]) {
                 }
                 else
                 {
-                    int result = openFile(token[1],token[2],openFilesCount,openFiles); //token[2] is hardcoded in atm!!
+                    int result = openFile(token[1],token[2],openFilesCount,openFiles);
                     if (result == 0) { // Assuming 0 is the success code
                         // Check if the file is in the openFiles array
                         openFilesCount++;
@@ -449,6 +440,7 @@ int main(int argc, char *argv[]) {
                 else
                 {
                     int index_counter= match(dir,token[1]);
+
                     if(index_counter==-2)
                     {
                         printf("Error: File not found \n");
