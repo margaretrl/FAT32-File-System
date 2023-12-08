@@ -445,6 +445,7 @@ int main(int argc, char *argv[]) {
             else if (strcmp("read", token[0]) == 0)
             {
 
+                // it like doesnt make an error if you only type in read and name of file
                 if (token[1] == NULL || token[2] == NULL )
                 {
                     printf("Please enter the file to read in the following format: ");
@@ -488,7 +489,6 @@ int main(int argc, char *argv[]) {
 
 
         for (int i = 0; i < token_count; i++) {
-            printf("freeing tokens\n");
             free(token[i]);
         }
         free(working_root);
