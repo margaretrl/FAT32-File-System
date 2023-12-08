@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,67 +24,23 @@
 //#define MAX_OPEN_FILES 10 // Maximum number of files that can be open at once
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-
-#include <string.h>
-#include <stdlib.h>
-
-char *custom_strsep(char **stringp, const char *delim) {
-    if (*stringp == NULL) { 
-        return NULL;
-    }
-
-    char *start = *stringp;
-    char *end;
-
-    if ((end = strpbrk(start, delim)) != NULL) {
-        *end = '\0';  // Replace the delimiter with null terminator
-        *stringp = end + 1;
-    } else {
-        *stringp = NULL;
-    }
-
-    return start;
-}
-
-#include <stdlib.h>
-#include <string.h>
-
-char *custom_strdup(const char *s, size_t n) {
-    size_t len = strnlen(s, n);
-    char *new_str = (char *)malloc(len + 1);
-
-    if (new_str == NULL) {
-        return NULL;
-    }
-
-    new_str[len] = '\0';
-    return (char *)memcpy(new_str, s, len);
-}
-
-
-// Add other necessary includes and definitions here
 
 int img_mounted = 0;
-
-int main(int argc, char *argv[]) {
-    // ... [Your struct definitions and global variables]
-    
+int main(int argc, char *argv[])
+{
     //Initialize Directory struct
     struct DirectoryEntry dir[16];
     // Initialize boot sector data struct
     BootSectorData bs;
-    //char *commands = (char *)malloc(MAX_CMD_SIZE);
+    char *commands = (char *)malloc(MAX_CMD_SIZE);
     if (argc != 2) {
+        // Error in usage
         printf("Usage: ./filesys [FAT32 ISO]\n");
         return 1;
     }
-
     FILE *imageFile = fopen(argv[1], "rb");
     if (!imageFile) {
+        // Image file doesn't exist
         printf("Error: File does not exist.\n");
         return 1;
     }
@@ -133,13 +90,12 @@ int main(int argc, char *argv[]) {
         img_mounted = 1;
     }
 
-    // ... [Your file handling logic]
+    // part 2
+    char currentPath[MAX_FILENAME_LENGTH] = "/"; // Root directory to start
+    //char parameter[100];
+    OpenFile openFiles[MAX_OPEN_FILES];
 
-    char currentPath[MAX_FILENAME_LENGTH] = "/"; // Adjust as needed
-    OpenFile openFiles[MAX_OPEN_FILES]; // Adjust as needed
-
-    // ... [Initializing elements of openFiles]
-      // Initializing elements of openFiles
+    // Initializing elements of openFiles
     for (int i = 0; i < MAX_OPEN_FILES; i++) {
         openFiles[i].filename[0] = '\0'; // Set the first character to null terminator
         openFiles[i].mode[0] = '\0';     // Same for mode
@@ -147,52 +103,61 @@ int main(int argc, char *argv[]) {
     }
 
     int openFilesCount = 0; // Current number of open files
-
-
-    char *commands = (char *)malloc(MAX_CMD_SIZE);
-    if (!commands) {
-        printf("Error: Memory allocation failed.\n");
-        fclose(imageFile);
-        return 1;
-    }
-
-    while (1) {
+    while (1)
+    {
+        // Print out the mfs prompt
         printf("[%s]%s> ", argv[1], currentPath);
 
-        if (!fgets(commands, MAX_CMD_SIZE, stdin)) {
-            // Handle error or EOF
-            break;
-        }
+
+
+        // Read the command from the commandline.  The
+        // maximum command that will be read is MAX_CMD_SIZE
+        // This while command will wait here until the user
+        // inputs something since fgets returns NULL when there
+        // is no input
+        while (!fgets(commands, MAX_CMD_SIZE, stdin))
+            ;
 
         char *token[MAX_ARG_NUM];
+
         int token_count = 0;
+
+        // Pointer to point to the token
+        // parsed by strsep
         char *arg_ptr;
-        char *working_str = custom_strdup(commands, MAX_CMD_SIZE);
 
-        if (!working_str) {
-            // Handle memory allocation failure
-            break;
-        }
+        char *working_str = strdup(commands);
 
+        // we are going to move the working_str pointer so
+        // keep track of its original value so we can deallocate
+        // the correct amount at the end
         char *working_root = working_str;
 
-        while (((arg_ptr = custom_strsep(&working_str, WHITESPACE)) != NULL) &&
-               (token_count < MAX_ARG_NUM)) {
-            if (*arg_ptr != '\0') {  // Check if token is not empty
-                token[token_count] = custom_strdup(arg_ptr, MAX_CMD_SIZE);
-                if (token[token_count] == NULL) {
-                    // Handle memory allocation failure
-                    break;
-                }
-                token_count++;
+        // Tokenize the input stringswith whitespace used as the delimiter
+        while (((arg_ptr = strsep(&working_str, WHITESPACE)) != NULL) &&
+               (token_count < MAX_ARG_NUM))
+        {
+            token[token_count] = strndup(arg_ptr, MAX_CMD_SIZE);
+            if (strlen(token[token_count]) == 0)
+            {
+                token[token_count] = NULL;
             }
+            token_count++;
         }
 
-        // ... [Your command processing logic]
+        //Continues if there is no user input, this checks for fragmentation
         if (token[0] == NULL)
         {
             continue;
         }
+
+            //opens the file
+
+
+            //Closes the file that is open
+
+
+        //Exits from the img shell
         else if (strcmp("exit", token[0]) == 0)
         {
             //!!! are we allowed to exit when there are files open
@@ -201,15 +166,8 @@ int main(int argc, char *argv[]) {
                 fclose(imageFile);
                 imageFile = NULL;
             }
-            printf("done exiting\n");
-            for (int i = 0; i < token_count; i++) {
-            printf("freeing tokens\n");
-            free(token[i]);
-            }
-            //free(working_root);
             break;
         }
-// --------------------------
 
             //info, stat, ls, get, cd, read works only when the fat32 image is open.
         else if (((strcmp("info", token[0]) == 0) || (strcmp("ls", token[0]) == 0) ||
@@ -251,7 +209,7 @@ int main(int argc, char *argv[]) {
                            dir[index_counter].fileSize, dir[index_counter].firstClusterLow);
                 }
                 continue;
-            }*/
+            }
             // was mega comment thing here *
                 //Implementing ls function
                 //List downs the files from a current directory when fat32 image file is open.
@@ -346,8 +304,8 @@ int main(int argc, char *argv[]) {
                     } else {
                         printf("Failed to open file.\n");
                     }
+
                     /*
-                    
                     imageFile = fopen(token[1], "r");
                     //Check if the given file name exists
                     if (imageFile == NULL)
@@ -391,7 +349,7 @@ int main(int argc, char *argv[]) {
 
                         printf("File successfully opened!!\n");
                         open_file = 1;
-                    }*/
+                    }
                     // was mega comment * here
                 }
             }
@@ -484,18 +442,9 @@ int main(int argc, char *argv[]) {
             printf("Error: Invalid Command.\n");
             continue;
         }
-// ----------------------------------------
-
-
-        for (int i = 0; i < token_count; i++) {
-            printf("freeing tokens\n");
-            free(token[i]);
-        }
         free(working_root);
     }
-
-    free(commands);
-    fclose(imageFile);
     return 0;
 }
 
+*/
