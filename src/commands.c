@@ -7,8 +7,8 @@
 void printFileSystemInfo(BootSectorData bs) {
     printf("Bytes per Sector: %d\n", bs.bytesPerSector);
     printf("Sectors per Cluster: %d\n", bs.sectorsPerCluster);
-    printf("Total clusters in Data Region: %d\n", 
-      (bs.totalSectors - (bs.reservedSectorCnt + (bs.FATnum * bs.FATSize32))/ bs.sectorsPerCluster));
+    printf("Total clusters in Data Region: %d\n", (bs.totalSectors - (bs.reservedSectorCnt +
+      (bs.FATnum * bs.FATSize32))/ bs.sectorsPerCluster));
     printf("# of entries in one FAT: %f\n", ((bs.FATSize32 * bs.bytesPerSector) / 4.));
     printf("Size of Image (bytes): %ld\n",bs.fileSize);
     printf("Root Cluster: %d\n", bs.rootClusterNum);
@@ -23,7 +23,7 @@ void lsfunction(struct DirectoryEntry dir[])
     {
         char word[12];
         memset(&word, 0, 12);
-        //Checks if the fils are read only, subdirectories, 0X30.
+        //Checks if the files are read only, subdirectories, 0X30.
         //Does not print the deleted file (signed char)0Xe5.
         if ((dir[i].attributes == 0x01 ||
              dir[i].attributes == 0x10 ||
@@ -59,7 +59,6 @@ int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     }
 
     // Validate the mode
-
     if (strcmp(mode, "-r") != 0 && strcmp(mode, "-w") != 0 &&
         strcmp(mode, "-rw") != 0 && strcmp(mode, "-wr") != 0) {
         printf("Error: Invalid mode.\n");
@@ -67,8 +66,7 @@ int openFilesCount,OpenFile openFiles[MAX_OPEN_FILES], char* currentPath) {
     }
 
     if (openFilesCount < MAX_OPEN_FILES) {
-        // ------------------
-        // should there be a check here for if match doesnt work? !!!
+        // Possibly need a check for it match doesn't work
         openFiles[openFilesCount].fileSize = dir[match(dir, filename)].fileSize;
 
         strncpy(openFiles[openFilesCount].filename, filename, MAX_FILENAME_LENGTH - 1);
@@ -162,10 +160,6 @@ void lseekfunction(OpenFile openFiles[], const char *filename, char *offset) {
             printf("File must be opened first\n");
         }
 
-
-
-
-    // do we need this !!!
     if (!fileFound) {
         printf("Error: File '%s' is not opened or does not exist.\n", filename);
     }

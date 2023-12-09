@@ -8,19 +8,16 @@ OBJ = $(SRC:.c=.o)
 
 # Target executable name and bin directory
 TARGET = filesys
-BINDIR = bin
 
-all: $(BINDIR)/$(TARGET)
+all: $(TARGET)
 
-$(BINDIR)/$(TARGET): $(OBJ)
-	mkdir $(BINDIR)
+$(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	rm -f src/*.o $(BINDIR)/$(TARGET)
-	rm -r $(BINDIR)
+	rm -f src/*.o $(TARGET)
 
 .PHONY: all clean

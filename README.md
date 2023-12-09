@@ -109,3 +109,8 @@ This will build the executable in root
 - We assume file and directory names will not contain spaces or file extensions (e.g., .txt, .exe).
 - We assume file and directory names will be names (not paths) within the current working directory.
 - We expect to receive the path of the image file in the main program’s first argument (argv[1]).
+
+## Notes
+- We have offset being changed during the read command as per the instructions: "Update the offset
+of the file to offset + [SIZE] (or to the size of the file if you reached the 
+end of the file)." This contradicts the demo video, but we followed the instructions.

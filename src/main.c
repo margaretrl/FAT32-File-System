@@ -13,18 +13,8 @@
 #define MAX_ARG_NUM 5 // Assumption based on implemented cmds
 #define MAX_FILE_SIZE 16
 
-/*
- * TODO
- *   the mode printed in the demo doesnt include the - but ours does
- *    should we not have an endl after printing the read cuz the demo doesnt
- *    Should the executable be in bin because ours is but in the demo it isnt
- *    commands.c line like 70 has a quesiton !!! and another one at the end
- *    Have to take out .img file i think
- *    same with do we need to change offset of file after reading
- *              it says this in the instructions: "Update the offset of the file to offset + [SIZE] (or to the size of the file if you reached the
-end of the file)"
-    make sure the margins or like lines are fine
- */
+// take out image file
+// margins
 
 int img_mounted = 0;
 char img_mounted_name[50];
@@ -396,6 +386,8 @@ int main(int argc, char *argv[]) {
                             printf("%s\n",temp_str);
 
                             free(temp_str);
+                            // We added this since the instructions said too
+                            openFiles[filepos].offset = openFiles[filepos].offset + atoi(token[2]);
 
                         }
                         else
